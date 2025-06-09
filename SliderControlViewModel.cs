@@ -1,5 +1,6 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using System;
+using System.Net;
 using System.Windows.Threading;
 
 namespace Sliders
@@ -8,8 +9,8 @@ namespace Sliders
     {
         private readonly DispatcherTimer _timer = new();
         private const int DurationInSeconds = 36;
-        private const double MaxValue = 1800;
-        private const double CanvasWidth = 760; // Approximate usable width in pixels
+        private const double MaxValue =1800;
+        private const double CanvasWidth = 740; // Approximate usable width in pixels
         private const double ScaleFactor = CanvasWidth / MaxValue; // ≈ 0.422
         private double _stepSize;
         private bool _countingUp = true;
@@ -81,9 +82,27 @@ namespace Sliders
                 FollowerSliderValue = SliderValue;
             }
 
+            double vmidpoint = (VerticalSliderMinimum + VerticalSliderMaximum) / 2.0;
+            double sliderHeight = 80; // as defined in XAML
+            double midY = sliderHeight * (vmidpoint - VerticalSliderMinimum) / (VerticalSliderMaximum - VerticalSliderMinimum);
+
+
             // Apply scaling to get pixel offset
             VerticalSliderLeft1 = SliderValue * ScaleFactor;
             VerticalSliderLeft2 = FollowerSliderValue * ScaleFactor;
+
+        }
+
+        public double VerticalSliderMidpointTop
+        {
+            get
+            {
+                double sliderHeight = 40;
+                double topOffset = 25;
+                double midpoint = (VerticalSliderMinimum + VerticalSliderMaximum) / 2.0;
+                double midY = sliderHeight * (1 - (midpoint - VerticalSliderMinimum) / (VerticalSliderMaximum - VerticalSliderMinimum));
+                return topOffset + midY;
+            }
         }
     }
 }

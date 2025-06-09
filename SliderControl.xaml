@@ -1,28 +1,30 @@
 ﻿<UserControl x:Class="Sliders.SliderControl"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             Height="350" Width="800">
-    <Grid Background="LightGray">
+             Height="250" Width="800">
+    <Grid Background="White">
         <Grid.RowDefinitions>
-            <RowDefinition Height="100"/>
+            <RowDefinition Height="95"/>
             <!-- Top canvas (vertical indicator for top slider) -->
             <RowDefinition Height="Auto"/>
             <!-- Top horizontal slider -->
             <RowDefinition Height="Auto"/>
             <!-- Bottom horizontal slider -->
-            <RowDefinition Height="100"/>
+            <RowDefinition Height="*"/>
             <!-- Bottom canvas (vertical indicator for bottom slider) -->
         </Grid.RowDefinitions>
 
         <!-- Top Canvas: Vertical Slider 1 -->
         <Canvas Grid.Row="0" Background="Transparent" Height="100">
+            <Line X1="0" X2="800" Stroke="Gray" StrokeThickness="20"
+          Canvas.Top="{Binding VerticalSliderMidpointTop}" />
             <Slider Orientation="Vertical"
             Minimum="{Binding VerticalSliderMinimum}"
             Maximum="{Binding VerticalSliderMaximum}"
             IsDirectionReversed="True"
             Height="80"
             Width="40"
-            Canvas.Top="10"
+            Canvas.Top="25"
             Canvas.Left="{Binding VerticalSliderLeft1}"
             Foreground="Blue">
                 <Slider.Template>
@@ -61,7 +63,7 @@
         Minimum="{Binding SliderMinimum}"
         Maximum="{Binding SliderMaximum}"
         Value="{Binding SliderValue, Mode=OneWay}"
-        Height="1"
+        Height="0"
         Margin="20,10"
         Foreground="Blue"/>
 
@@ -70,18 +72,20 @@
         Minimum="{Binding SliderMinimum}"
         Maximum="{Binding SliderMaximum}"
         Value="{Binding FollowerSliderValue, Mode=OneWay}"
-        Height="1"
+        Height="0"
         Margin="20,10"
         Foreground="Green"/>
 
         <!-- Bottom Canvas: Vertical Slider 2 -->
         <Canvas Grid.Row="3" Background="Transparent" Height="100">
+            <Line X1="0" X2="800" Stroke="Gray" StrokeThickness="20"
+          Canvas.Top="{Binding VerticalSliderMidpointTop}" />
             <Slider Orientation="Vertical"
             Minimum="{Binding VerticalSliderMinimum}"
             Maximum="{Binding VerticalSliderMaximum}"
             Height="80"
             Width="40"
-            Canvas.Top="10"
+            Canvas.Top="-20"
             Canvas.Left="{Binding VerticalSliderLeft2}"
             Foreground="Green">
                 <Slider.Template>
