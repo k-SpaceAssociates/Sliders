@@ -9,8 +9,16 @@ namespace Sliders
         private readonly DispatcherTimer _timer = new();
         private const int DurationInSeconds = 36;
         private const double MaxValue = 1800;
+        private const double CanvasWidth = 760; // Approximate usable width in pixels
+        private const double ScaleFactor = CanvasWidth / MaxValue; // ≈ 0.422
         private double _stepSize;
         private bool _countingUp = true;
+
+        [ObservableProperty]
+        private double sliderMinimum = 0;
+
+        [ObservableProperty]
+        private double sliderMaximum = 1800;
 
         [ObservableProperty]
         private double sliderValue;
@@ -19,10 +27,22 @@ namespace Sliders
         private double followerSliderValue;
 
         [ObservableProperty]
+        private double verticalSliderMinimum = 0;
+
+        [ObservableProperty]
+        private double verticalSliderMaximum = 100;
+
+        [ObservableProperty]
+        private double verticalSliderLeft1;
+
+        [ObservableProperty]
+        private double verticalSliderLeft2;
+
+        [ObservableProperty]
         private bool follow = true;  // default true
 
         [ObservableProperty]
-        private bool v1803 =false;   // default true
+        private bool v1803 =true;   // default true
 
         public SliderControlViewModel()
         {
@@ -55,11 +75,15 @@ namespace Sliders
                 }
             }
 
-            // Control follower behavior
+            // Sync follower
             if (Follow && V1803)
             {
                 FollowerSliderValue = SliderValue;
             }
+
+            // Apply scaling to get pixel offset
+            VerticalSliderLeft1 = SliderValue * ScaleFactor;
+            VerticalSliderLeft2 = FollowerSliderValue * ScaleFactor;
         }
     }
 }

@@ -9,6 +9,10 @@
 	</PropertyGroup>
 
 	<ItemGroup>
+	  <None Remove="Images\Nidec.png" />
+	</ItemGroup>
+
+	<ItemGroup>
 	  <PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.0" />
 	</ItemGroup>
 
@@ -31,6 +35,12 @@
 	  <Page Update="SliderControl.xaml">
 	    <CopyToOutputDirectory>Never</CopyToOutputDirectory>
 	  </Page>
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Resource Include="Images\Nidec.png">
+	    <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+	  </Resource>
 	</ItemGroup>
 
 </Project>
