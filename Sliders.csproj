@@ -9,6 +9,13 @@
 	</PropertyGroup>
 
 	<ItemGroup>
+	  <Compile Remove="SliderLauncher\**" />
+	  <EmbeddedResource Remove="SliderLauncher\**" />
+	  <None Remove="SliderLauncher\**" />
+	  <Page Remove="SliderLauncher\**" />
+	</ItemGroup>
+
+	<ItemGroup>
 	  <None Remove="Images\Nidec.png" />
 	</ItemGroup>
 
