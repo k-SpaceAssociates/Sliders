@@ -50,4 +50,8 @@
 	  </Resource>
 	</ItemGroup>
 
+	<ItemGroup>
+	  <Folder Include="Sliders\" />
+	</ItemGroup>
+
 </Project>
