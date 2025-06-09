@@ -1,0 +1,25 @@
+﻿<UserControl x:Class="Sliders.SliderControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             Height="450" Width="800">
+    <Grid Background="LightGray">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <Slider Grid.Row="0"
+            Minimum="0" Maximum="1800"
+            Value="{Binding SliderValue, Mode=OneWay}"
+            Height="40"
+            Margin="20,10"
+            Foreground="Blue"/>
+
+        <Slider Grid.Row="1"
+            Minimum="0" Maximum="1800"
+            Value="{Binding FollowerSliderValue, Mode=OneWay}"
+            Height="40"
+            Margin="20,10"
+            Foreground="Green"/>
+    </Grid>
+</UserControl>
