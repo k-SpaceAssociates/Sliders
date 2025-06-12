@@ -1,12 +1,27 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
+using CommunityToolkit.Mvvm.Messaging;
+using CommunityToolkit.Mvvm.Messaging.Messages;
+using kSAAutomationUtils;
+using kSAAutomationUtils.ViewModels;
+using kSATxtCmdNETSDk;
+using log4net;
+using log4net.Config;
+using Sliders.Properties;
 using System;
+using System.IO;
 using System.Net;
+using System.Windows;
+using System.Windows.Input;
 using System.Windows.Threading;
+using System.Xml.Linq;
+using System.Xml.Serialization;
 
 namespace Sliders
 {
     public partial class SliderControlViewModel : ObservableObject
     {
+ 
         private readonly DispatcherTimer _timer = new();
         private const int DurationInSeconds = 36;
         private const double MaxValue =1800;
@@ -15,6 +30,7 @@ namespace Sliders
         private double _stepSize;
         private bool _countingUp = true;
 
+       
         [ObservableProperty]
         private double sliderMinimum = 0;
 
@@ -52,8 +68,8 @@ namespace Sliders
             _timer.Interval = TimeSpan.FromMilliseconds(50);
             _timer.Tick += (s, e) => UpdateSlider();
             _timer.Start();
-        }
 
+        }
         private void UpdateSlider()
         {
             // Animate primary slider
@@ -104,5 +120,23 @@ namespace Sliders
                 return topOffset + midY;
             }
         }
+    
+
+
+        public bool OnClosing()
+        {
+            string confirmMessage = "Are you sure you want to exit?";
+            bool close = MessageBox.Show(confirmMessage, "Confirm Exit", MessageBoxButton.YesNo) == MessageBoxResult.Yes;
+
+            if (close)
+            {
+
+                // give it a moment to finish up
+                Thread.Sleep(100);
+            }
+            return close;
+        }
+
     }
+
 }

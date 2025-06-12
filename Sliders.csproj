@@ -1,13 +1,13 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.WindowsDesktop">
 
 	<PropertyGroup>
-		<TargetFramework>net9.0-windows10.0.17763.0</TargetFramework>
+		<TargetFramework>net9.0-windows7.0</TargetFramework>
 		<UseWPF>true</UseWPF>
 		<Nullable>enable</Nullable>
 		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
 		<!-- Generate nuget package -->
 		<PackageId>NidecStagesToSliders</PackageId>
-		<Version>1.0.0</Version>
+		<Version>1.0.1</Version>
 		<Authors>DES</Authors>
 		<Company>k-Space Associates, Inc.</Company>
 		<Description>A WPF SDK for displaying 4 nidec stages first created for Vitro.</Description>
@@ -21,9 +21,13 @@
 	</PropertyGroup>
 
 	<ItemGroup>
+	  <Compile Remove="ClientTestApp\**" />
 	  <Compile Remove="SliderLauncher\**" />
+	  <EmbeddedResource Remove="ClientTestApp\**" />
 	  <EmbeddedResource Remove="SliderLauncher\**" />
+	  <None Remove="ClientTestApp\**" />
 	  <None Remove="SliderLauncher\**" />
+	  <Page Remove="ClientTestApp\**" />
 	  <Page Remove="SliderLauncher\**" />
 	</ItemGroup>
 
@@ -33,6 +37,9 @@
 
 	<ItemGroup>
 	  <PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.0" />
+	  <PackageReference Include="kSAAutomationUtils" Version="1.0.1" />
+	  <PackageReference Include="kSATxtCmdNETSDK" Version="1.0.6" />
+	  <PackageReference Include="log4net" Version="3.1.0" />
 	</ItemGroup>
 
 	<ItemGroup>
