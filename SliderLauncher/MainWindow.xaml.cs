@@ -30,7 +30,7 @@ namespace SliderLauncher
         private readonly DispatcherTimer _timer = new();
         private readonly kSATxtCmdClient cmdClient = new();
         CommandClientHandler client = new CommandClientHandler();
-
+        private bool _isRunning = false;
         private SliderControlViewModel vm;
         public MainWindow()
         {
@@ -39,7 +39,7 @@ namespace SliderLauncher
             this.DataContext = vm;
             ClientConnect();
             
-            _timer.Interval = TimeSpan.FromMilliseconds(50);
+            _timer.Interval = TimeSpan.FromMilliseconds(200);
             _timer.Tick += (s, e) => RunCommands();
             _timer.Start();
             this.Closing += MainWindow_Closing;
@@ -89,22 +89,36 @@ namespace SliderLauncher
         //string? Direction { get; set; }
         public void RunCommands()
         {
-            foreach (var command in vm.CommandsToRun)
+            if (_isRunning)
+                return;
+            _isRunning = true;
+
+            try
             {
-                if (!string.IsNullOrWhiteSpace(command))
+                foreach (var command in vm.CommandsToRun)
                 {
-                    if (command == "position") //Need to do for a Stages in list
+                    if (!string.IsNullOrWhiteSpace(command))
                     {
-                        if(vm.StageList != null)
+                        if (command == "position")
                         {
-                            foreach(string stage in vm.StageList)
+                            if (vm.StageList != null)
                             {
-                                Send(command + " " + stage);
+                                foreach (string stage in vm.StageList) //There will be no stages if connection is lost
+                                {
+                                    Send(command + " " + stage);
+                                }
                             }
                         }
+                        else
+                        {
+                            Send(command);
+                        }
                     }
-                    else Send(command);
                 }
+            }
+            finally
+            {
+                _isRunning = false;
             }
         }
         private void ClientConnect()

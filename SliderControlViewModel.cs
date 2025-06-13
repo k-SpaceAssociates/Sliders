@@ -100,9 +100,33 @@ namespace Sliders
                     }
                 }
                 Follow =true;
+                string result;
+                if(StagePositions!=null && StagePositions.Count > 0)
+                {
+                    foreach(string stagepos in StagePositions)
+                    {
+                       result = stagepos;
+                    }
+                }
+            }
+            else
+            {
+                double[] result= { 0, 0, 0, 0 };
+                if (StagePositions != null && StagePositions.Count == 4) // No connection stages will be 0.
+                {
+                    result[0] = double.Parse(StagePositions[0]); //StageH1
+                    SliderValue = result[0];
+                    result[1] = double.Parse(StagePositions[1]); //StageH1
+                    FollowerSliderValue = result[1];
+                    result[2] = double.Parse(StagePositions[1]); //StageH1
+                    VerticalSliderLeft1 = result[2];
+                    result[3] = double.Parse(StagePositions[1]); //StageH1
+                    VerticalSliderLeft2 = result[3];
+                }
+                else SliderValue = 0;
             }
 
- 
+
             // Sync follower
             if (Follow && V1803)
             {
