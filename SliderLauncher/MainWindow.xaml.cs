@@ -1,6 +1,12 @@
-﻿using log4net;
+﻿using kSATxtCmdNETSDk;
+using log4net;
+using SliderLauncher;
 using Sliders;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
+using System.Diagnostics;
+using System.Net.Quic;
 using System.Text;
 using System.Windows;
 using System.Windows.Controls;
@@ -11,12 +17,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
-using kSATxtCmdNETSDk;
-using SliderLauncher;
-using System.Diagnostics;
-using System.Net.Quic;
-using System.Collections.ObjectModel;
-using System.ComponentModel.DataAnnotations;
+using System.Windows.Threading;
 
 namespace SliderLauncher
 {
@@ -26,7 +27,7 @@ namespace SliderLauncher
     public partial class MainWindow : Window
     {
         private static readonly ILog log = LogManager.GetLogger(typeof(MainWindow));
-
+        private readonly DispatcherTimer _timer = new();
         private readonly kSATxtCmdClient cmdClient = new();
         CommandClientHandler client = new CommandClientHandler();
 
@@ -37,7 +38,10 @@ namespace SliderLauncher
             vm = new SliderControlViewModel();
             this.DataContext = vm;
             ClientConnect();
-            RunCommands();
+            
+            _timer.Interval = TimeSpan.FromMilliseconds(50);
+            _timer.Tick += (s, e) => RunCommands();
+            _timer.Start();
             this.Closing += MainWindow_Closing;
         }
         bool closeCheck = false;
