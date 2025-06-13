@@ -1,36 +1,45 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
-using CommunityToolkit.Mvvm.Input;
-using CommunityToolkit.Mvvm.Messaging;
-using CommunityToolkit.Mvvm.Messaging.Messages;
-using kSAAutomationUtils;
-using kSAAutomationUtils.ViewModels;
-using kSATxtCmdNETSDk;
-using log4net;
-using log4net.Config;
-using Sliders.Properties;
-using System;
-using System.IO;
-using System.Net;
+using System.Collections.ObjectModel;
 using System.Windows;
-using System.Windows.Input;
 using System.Windows.Threading;
-using System.Xml.Linq;
-using System.Xml.Serialization;
 
 namespace Sliders
 {
     public partial class SliderControlViewModel : ObservableObject
     {
- 
+
         private readonly DispatcherTimer _timer = new();
         private const int DurationInSeconds = 36;
-        private const double MaxValue =1800;
+        private const double MaxValue = 1800;
         private const double CanvasWidth = 740; // Approximate usable width in pixels
         private const double ScaleFactor = CanvasWidth / MaxValue; // ≈ 0.422
         private double _stepSize;
         private bool _countingUp = true;
 
-       
+        ///////////////////////////////////////////////////////////////////////////
+        public ObservableCollection<string> CommandsToRun { get; } = new()
+        {
+            "?",
+            "list",
+            "direction",
+            "position",
+            "follow",
+        };
+
+        public ObservableCollection<string> StageList { get; } = new() { };
+        int maxStages = 4;
+        public ObservableCollection<string> StagePositions { get; } = new() { };
+
+        [ObservableProperty]
+        bool follow = false;
+
+        [ObservableProperty]
+        string? direction = "";
+        ///////////////////////////////////////////////////////////////////////////
+
+        [ObservableProperty]
+        private bool dummy = true;
+
         [ObservableProperty]
         private double sliderMinimum = 0;
 
@@ -56,10 +65,7 @@ namespace Sliders
         private double verticalSliderLeft2;
 
         [ObservableProperty]
-        private bool follow = true;  // default true
-
-        [ObservableProperty]
-        private bool v1803 =true;   // default true
+        private bool v1803 = true;   // default true
 
         public SliderControlViewModel()
         {
@@ -72,26 +78,31 @@ namespace Sliders
         }
         private void UpdateSlider()
         {
-            // Animate primary slider
-            if (_countingUp)
+            if (Dummy)
             {
-                SliderValue += _stepSize;
-                if (SliderValue >= MaxValue)
+                // Animate primary slider
+                if (_countingUp)
                 {
-                    SliderValue = MaxValue;
-                    _countingUp = false;
+                    SliderValue += _stepSize;
+                    if (SliderValue >= MaxValue)
+                    {
+                        SliderValue = MaxValue;
+                        _countingUp = false;
+                    }
                 }
-            }
-            else
-            {
-                SliderValue -= _stepSize;
-                if (SliderValue <= 0)
+                else
                 {
-                    SliderValue = 0;
-                    _countingUp = true;
+                    SliderValue -= _stepSize;
+                    if (SliderValue <= 0)
+                    {
+                        SliderValue = 0;
+                        _countingUp = true;
+                    }
                 }
+                Follow =true;
             }
 
+ 
             // Sync follower
             if (Follow && V1803)
             {
@@ -120,7 +131,7 @@ namespace Sliders
                 return topOffset + midY;
             }
         }
-    
+
 
 
         public bool OnClosing()

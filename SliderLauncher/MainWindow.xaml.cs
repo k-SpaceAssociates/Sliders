@@ -11,6 +11,12 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using kSATxtCmdNETSDk;
+using SliderLauncher;
+using System.Diagnostics;
+using System.Net.Quic;
+using System.Collections.ObjectModel;
+using System.ComponentModel.DataAnnotations;
 
 namespace SliderLauncher
 {
@@ -21,10 +27,17 @@ namespace SliderLauncher
     {
         private static readonly ILog log = LogManager.GetLogger(typeof(MainWindow));
 
+        private readonly kSATxtCmdClient cmdClient = new();
+        CommandClientHandler client = new CommandClientHandler();
+
+        private SliderControlViewModel vm;
         public MainWindow()
         {
             InitializeComponent();
-            this.DataContext = new SliderControlViewModel();
+            vm = new SliderControlViewModel();
+            this.DataContext = vm;
+            ClientConnect();
+            RunCommands();
             this.Closing += MainWindow_Closing;
         }
         bool closeCheck = false;
@@ -50,6 +63,125 @@ namespace SliderLauncher
                     //log.Info("Closing MainWindow confirmed.");
                 }
             }
+        }
+
+        //public ObservableCollection<string> CommandsToRun { get; } = new()
+        //{
+        //    "?",
+        //    "list",
+        //    "direction",
+        //    "position",
+        //    "follow",
+        //};
+
+        //public ObservableCollection<string> StageList { get; } = new() { };
+        //int maxStages = 4;
+        //public ObservableCollection<string> StagePositions { get; } = new() { };
+
+        //bool follow = false;
+        //bool Follow { get; set; }
+
+        //string? direction = "";
+        //string? Direction { get; set; }
+        public void RunCommands()
+        {
+            foreach (var command in vm.CommandsToRun)
+            {
+                if (!string.IsNullOrWhiteSpace(command))
+                {
+                    if (command == "position") //Need to do for a Stages in list
+                    {
+                        if(vm.StageList != null)
+                        {
+                            foreach(string stage in vm.StageList)
+                            {
+                                Send(command + " " + stage);
+                            }
+                        }
+                    }
+                    else Send(command);
+                }
+            }
+        }
+        private void ClientConnect()
+        {
+            bool connected = client.Connect("localhost", 49215, out var response, out var ret);
+            Debug.WriteLine(connected ? $"Connected.\nResponse: {response}\nRet: {ret}" : response);
+        }
+
+        private void Send(string command)
+        {
+            bool sent = client.Send(command, out var response, out var ret);
+            Debug.WriteLine($"Ret: {ret}\nCommand: {command}\nResponse:{response}\n");
+            AssignResults(command, response);
+        }
+
+        void AssignResults(string cmd, string response)
+        {
+            if (cmd == "list") //Assume list gets Stages available
+            {
+                var stages = ConvertToList(response);
+                vm.StageList.Clear();
+                foreach (var stage in stages)
+                    vm.StageList.Add(stage);
+            }
+            else if (cmd.StartsWith("position", StringComparison.OrdinalIgnoreCase))
+            {
+                var stagePosition = cmd.Substring("position".Length).Trim();
+                if(vm.StagePositions.Count == 4) vm.StagePositions.Clear(); //If we already have all 4 positions then assume need to clear and start getting next 4
+
+                var lines = response.Split(new[] { "\r\n" }, StringSplitOptions.RemoveEmptyEntries);
+                if (lines.Length > 0)
+                  vm.StagePositions.Add(lines[0]);
+            }
+            else if (cmd == "direction")
+            {
+                var lines = response.Split(new[] { "\r\n" }, StringSplitOptions.RemoveEmptyEntries);
+                if (lines.Length > 0)
+                    vm.Direction = lines[0];
+            }
+
+            else if (cmd == "follow")
+            {
+                if (response.IndexOf("off", StringComparison.OrdinalIgnoreCase) >= 0)
+                {
+                    vm.Follow = false;
+                }
+                else if (response.IndexOf("on", StringComparison.OrdinalIgnoreCase) >= 0)
+                {
+                    vm.Follow = true;
+                }
+                else vm.Follow = false;
+            }
+            else if (cmd == "?")
+            {
+                //Debug.WriteLine(response);
+            }
+            else
+            {
+                // Handle other commands if necessary
+            }
+
+        }
+
+        List<string> ConvertToList(string rawInput)
+        {
+            // Split by newlines, remove empty entries, and trim any remaining whitespace
+            List<string> stageList = rawInput
+                .Split(new[] { "\r\n" }, StringSplitOptions.RemoveEmptyEntries)
+                .Select(stage => stage.Trim())
+                .ToList();
+            return stageList;
+        }
+        private void AppendOutput(string text)
+        {
+            Debug.WriteLine(text + "\n");
+        }
+
+        protected override void OnClosed(EventArgs e)
+        {
+            client.Close();
+            base.OnClosed(e);
         }
     }
 }
