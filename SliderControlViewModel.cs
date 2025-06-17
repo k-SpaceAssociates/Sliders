@@ -1,6 +1,8 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.Windows;
+using System.Windows.Media.Media3D;
 using System.Windows.Threading;
 
 namespace Sliders
@@ -9,21 +11,23 @@ namespace Sliders
     {
 
         private readonly DispatcherTimer _timer = new();
-        private const int DurationInSeconds = 36;
-        private const double MaxValue = 1800;
+        public const int DurationInSeconds = 36;
+        public const double HMaxValue = 1800;
+        public const double VMaxValue = 100;
         private const double CanvasWidth = 740; // Approximate usable width in pixels
-        private const double ScaleFactor = CanvasWidth / MaxValue; // ≈ 0.422
-        private double _stepSize;
+        private const double CanvasHeight = 100; // Approximate usable height in pixels
+        private const double HScaleFactor = CanvasWidth / HMaxValue; // ≈ 0.422
+        private const double VScaleFactor = CanvasWidth / VMaxValue;
+        public double _stepSize;
         private bool _countingUp = true;
 
         ///////////////////////////////////////////////////////////////////////////
         public ObservableCollection<string> CommandsToRun { get; } = new()
         {
-            "?",
             "list",
             "direction",
             "position",
-            "follow",
+            //"follow", //Bug sending follow command does not get it only sets.
         };
 
         public ObservableCollection<string> StageList { get; } = new() { };
@@ -31,14 +35,14 @@ namespace Sliders
         public ObservableCollection<string> StagePositions { get; } = new() { };
 
         [ObservableProperty]
-        bool follow = false;
+        bool follow = true;
 
         [ObservableProperty]
         string? direction = "";
         ///////////////////////////////////////////////////////////////////////////
 
         [ObservableProperty]
-        private bool dummy = true;
+        private bool dummy = false; //dummy when false will animate the slider on a timer with fake data on the horizontal sliders and non on veritcal except UI input
 
         [ObservableProperty]
         private double sliderMinimum = 0;
@@ -56,27 +60,43 @@ namespace Sliders
         private double verticalSliderMinimum = 0;
 
         [ObservableProperty]
-        private double verticalSliderMaximum = 100;
+        private double verticalSliderMaximum = 500;
 
         [ObservableProperty]
         private double verticalSliderLeft1;
 
         [ObservableProperty]
+        private double verticalSliderTop1;
+
+        [ObservableProperty]
         private double verticalSliderLeft2;
+
+        [ObservableProperty]
+        private double verticalSliderTop2;
+
+        [ObservableProperty]
+        private double verticalStageValue1;
+
+        [ObservableProperty]
+        private double verticalStageValue2;
 
         [ObservableProperty]
         private bool v1803 = true;   // default true
 
         public SliderControlViewModel()
         {
-            _stepSize = MaxValue / (DurationInSeconds / 0.05); // update every 50ms
+            if(dummy)
+            {
+                _stepSize = HMaxValue / (DurationInSeconds / 0.05); // update every 50ms
 
-            _timer.Interval = TimeSpan.FromMilliseconds(50);
-            _timer.Tick += (s, e) => UpdateSlider();
-            _timer.Start();
-
+                _timer.Interval = TimeSpan.FromMilliseconds(50);
+                _timer.Tick += (s, e) => UpdateSlider();
+                _timer.Start();
+            }
         }
-        private void UpdateSlider()
+
+        double[] result = { 0, 0, 0, 0 };
+        public void UpdateSlider()
         {
             if (Dummy)
             {
@@ -84,9 +104,9 @@ namespace Sliders
                 if (_countingUp)
                 {
                     SliderValue += _stepSize;
-                    if (SliderValue >= MaxValue)
+                    if (SliderValue >= HMaxValue)
                     {
-                        SliderValue = MaxValue;
+                        SliderValue = HMaxValue;
                         _countingUp = false;
                     }
                 }
@@ -100,6 +120,10 @@ namespace Sliders
                     }
                 }
                 Follow =true;
+                if (Follow)
+                {
+                    FollowerSliderValue = SliderValue;
+                }
                 string result;
                 if(StagePositions!=null && StagePositions.Count > 0)
                 {
@@ -108,39 +132,51 @@ namespace Sliders
                        result = stagepos;
                     }
                 }
+
+                // Apply scaling to get pixel offset
+                VerticalSliderLeft1 = SliderValue * HScaleFactor;
+                VerticalSliderLeft2 = FollowerSliderValue * HScaleFactor;
             }
             else
             {
-                double[] result= { 0, 0, 0, 0 };
-                if (StagePositions != null && StagePositions.Count == 4) // No connection stages will be 0.
+                Application.Current.Dispatcher.Invoke(() =>
                 {
-                    result[0] = double.Parse(StagePositions[0]); //StageH1
-                    SliderValue = result[0];
-                    result[1] = double.Parse(StagePositions[1]); //StageH1
-                    FollowerSliderValue = result[1];
-                    result[2] = double.Parse(StagePositions[1]); //StageH1
-                    VerticalSliderLeft1 = result[2];
-                    result[3] = double.Parse(StagePositions[1]); //StageH1
-                    VerticalSliderLeft2 = result[3];
-                }
-                else SliderValue = 0;
+                    if (StagePositions != null && StagePositions.Count == 4)
+                    {
+                        result[0] = double.Parse(StagePositions[0]); //StageH1
+                        SliderValue = result[0];
+
+                        if (Follow)
+                        {
+                            FollowerSliderValue = SliderValue;
+                        }
+                        else
+                        {
+                            result[1] = double.Parse(StagePositions[1]); //StageH2
+                            FollowerSliderValue = result[1];
+                        }
+                        // Apply scaling to get pixel offset
+                        VerticalSliderLeft1 = SliderValue * HScaleFactor;
+                        VerticalSliderLeft2 = FollowerSliderValue * HScaleFactor;
+
+                        result[2] = double.Parse(StagePositions[2]); //StageV1
+                        VerticalStageValue1 = result[2];
+                        VerticalSliderTop1 = CanvasHeight - (result[2] - VerticalSliderMinimum);
+                        result[3] = double.Parse(StagePositions[3]); //StageV2
+                        VerticalStageValue2 = result[3];
+                        VerticalSliderTop2 = CanvasHeight - (result[3] - VerticalSliderMinimum);
+                    }
+                });
+                Debug.WriteLine($"SliderValue: {SliderValue}, FollowerSliderValue: {FollowerSliderValue}");
+                Debug.WriteLine($"Vertical1: {VerticalSliderLeft1}, Vertical2: {VerticalSliderLeft2}");
             }
 
 
-            // Sync follower
-            if (Follow && V1803)
-            {
-                FollowerSliderValue = SliderValue;
-            }
+ 
 
             double vmidpoint = (VerticalSliderMinimum + VerticalSliderMaximum) / 2.0;
             double sliderHeight = 80; // as defined in XAML
             double midY = sliderHeight * (vmidpoint - VerticalSliderMinimum) / (VerticalSliderMaximum - VerticalSliderMinimum);
-
-
-            // Apply scaling to get pixel offset
-            VerticalSliderLeft1 = SliderValue * ScaleFactor;
-            VerticalSliderLeft2 = FollowerSliderValue * ScaleFactor;
 
         }
 

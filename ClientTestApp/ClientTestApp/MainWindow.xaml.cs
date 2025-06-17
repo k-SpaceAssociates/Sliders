@@ -18,8 +18,8 @@ namespace ClientTestApp
         private void Connect_Click(object sender, RoutedEventArgs e)
         {
             AppendOutput("Attempting to connect...");
-
-            if (cmdClient.ConnectToServer("localhost", 49215))
+            if (cmdClient.ConnectToServer("192.168.3.10", 49215))
+            //if (cmdClient.ConnectToServer("localhost", 49215))
             {
                 string response = "";
                 var ret = cmdClient.GetConnectResponse(ref response);

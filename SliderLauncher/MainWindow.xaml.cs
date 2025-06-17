@@ -32,16 +32,21 @@ namespace SliderLauncher
         CommandClientHandler client = new CommandClientHandler();
         private bool _isRunning = false;
         private SliderControlViewModel vm;
+        private int _stageUpdateIndex = 0;
         public MainWindow()
         {
             InitializeComponent();
             vm = new SliderControlViewModel();
-            this.DataContext = vm;
-            ClientConnect();
-            
-            _timer.Interval = TimeSpan.FromMilliseconds(200);
-            _timer.Tick += (s, e) => RunCommands();
-            _timer.Start();
+            sliderControl.DataContext = vm;
+            if (!vm.Dummy)
+            {
+                ClientConnect();
+                vm._stepSize =1800 / (36 / 0.05); // update every 50ms
+                _timer.Interval = TimeSpan.FromMilliseconds(200);
+                _timer.Tick += (s, e) => RunCommands();
+                _timer.Start();
+            }
+
             this.Closing += MainWindow_Closing;
         }
         bool closeCheck = false;
@@ -123,7 +128,8 @@ namespace SliderLauncher
         }
         private void ClientConnect()
         {
-            bool connected = client.Connect("localhost", 49215, out var response, out var ret);
+           // bool connected = client.Connect("localhost", 49215, out var response, out var ret);
+            bool connected = client.Connect("192.168.3.10", 49215, out var response, out var ret);
             Debug.WriteLine(connected ? $"Connected.\nResponse: {response}\nRet: {ret}" : response);
         }
 
@@ -146,11 +152,26 @@ namespace SliderLauncher
             else if (cmd.StartsWith("position", StringComparison.OrdinalIgnoreCase))
             {
                 var stagePosition = cmd.Substring("position".Length).Trim();
-                if(vm.StagePositions.Count == 4) vm.StagePositions.Clear(); //If we already have all 4 positions then assume need to clear and start getting next 4
+                //if(vm.StagePositions.Count == 4) vm.StagePositions.Clear(); //This will clear current info. and start getting next 4
 
                 var lines = response.Split(new[] { "\r\n" }, StringSplitOptions.RemoveEmptyEntries);
                 if (lines.Length > 0)
-                  vm.StagePositions.Add(lines[0]);
+                {
+                    var newValue = lines[0];
+
+                    if (vm.StagePositions.Count < 4)
+                    {
+                        vm.StagePositions.Add(newValue); // Add until you have 4 items
+                    }
+                    else
+                    {
+                        vm.StagePositions[_stageUpdateIndex] = newValue; // Overwrite existing item
+                    }
+
+                    _stageUpdateIndex = (_stageUpdateIndex + 1) % 4; // Wrap index from 0 to 3
+                }
+                if (vm.StagePositions.Count == 4)
+                    vm.UpdateSlider();
             }
             else if (cmd == "direction")
             {

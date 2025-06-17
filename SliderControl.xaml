@@ -13,7 +13,6 @@
             <RowDefinition Height="*"/>
             <!-- Bottom canvas (vertical indicator for bottom slider) -->
         </Grid.RowDefinitions>
-
         <!-- Top Canvas: Vertical Slider 1 -->
         <Canvas Grid.Row="0" Background="Transparent" Height="100">
             <Line X1="0" X2="800" Stroke="Gray" StrokeThickness="20"
@@ -24,8 +23,8 @@
             IsDirectionReversed="True"
             Height="80"
             Width="40"
-            Canvas.Top="25"
-            Canvas.Left="{Binding VerticalSliderLeft1}"
+            Canvas.Top="{Binding VerticalSliderTop1, Mode=TwoWay}"
+            Canvas.Left="{Binding VerticalSliderLeft1, Mode=TwoWay}"
             Foreground="Blue">
                 <Slider.Template>
                 <ControlTemplate TargetType="Slider">
@@ -33,9 +32,10 @@
                         <Track x:Name="PART_Track"
                            IsDirectionReversed="True"
                            Orientation="Vertical"
-                           Minimum="{TemplateBinding Minimum}"
-                           Maximum="{TemplateBinding Maximum}"
-                           Value="{TemplateBinding Value}">
+                           Minimum="{Binding Minimum, RelativeSource={RelativeSource TemplatedParent}}"
+                           Maximum="{Binding Maximum, RelativeSource={RelativeSource TemplatedParent}}"
+                           Value="{Binding Value, RelativeSource={RelativeSource TemplatedParent}}"
+                        >
                             <Track.Thumb>
                                 <Thumb Width="40" Height="40">
                                     <Thumb.Template>
@@ -56,22 +56,32 @@
                 </ControlTemplate>
                 </Slider.Template>
             </Slider>
+            <TextBlock Text="{Binding VerticalStageValue1}" 
+               FontSize="14" 
+               Foreground="Blue"
+               Canvas.Left="{Binding VerticalSliderLeft1}" 
+               Canvas.Top="{Binding VerticalSliderTop1}" />
         </Canvas>
 
         <!-- Top Horizontal Slider -->
         <Slider Grid.Row="1"
         Minimum="{Binding SliderMinimum}"
         Maximum="{Binding SliderMaximum}"
-        Value="{Binding SliderValue, Mode=OneWay}"
+        Value="{Binding SliderValue, Mode=TwoWay}"
         Height="0"
         Margin="20,10"
         Foreground="Blue"/>
+        <StackPanel VerticalAlignment="Top" HorizontalAlignment="Left" Margin="10">
+            <TextBlock Text="{Binding SliderValue}" Foreground="Red" FontSize="16"/>
+            <TextBlock Text="{Binding SliderMinimum}" Foreground="Blue" FontSize="16"/>
+        </StackPanel>
+        <TextBlock Text="{Binding SliderMaximum}" Foreground="Green" FontSize="16" HorizontalAlignment="Right" Margin="30"/>
 
         <!-- Bottom Horizontal Slider -->
         <Slider Grid.Row="2"
         Minimum="{Binding SliderMinimum}"
         Maximum="{Binding SliderMaximum}"
-        Value="{Binding FollowerSliderValue, Mode=OneWay}"
+        Value="{Binding FollowerSliderValue, Mode=TwoWay}"
         Height="0"
         Margin="20,10"
         Foreground="Green"/>
@@ -85,34 +95,40 @@
             Maximum="{Binding VerticalSliderMaximum}"
             Height="80"
             Width="40"
-            Canvas.Top="-20"
-            Canvas.Left="{Binding VerticalSliderLeft2}"
+            Canvas.Top="{Binding VerticalSliderTop2, Mode=TwoWay}"
+            Canvas.Left="{Binding VerticalSliderLeft2, Mode=TwoWay}"
             Foreground="Green">
                 <Slider.Template>
-                <ControlTemplate TargetType="Slider">
-                    <Grid>
-                        <Track x:Name="PART_Track"
+                    <ControlTemplate TargetType="Slider">
+                        <Grid>
+                            <Track x:Name="PART_Track"
                            IsDirectionReversed="True"
                            Orientation="Vertical"
                            Minimum="{TemplateBinding Minimum}"
                            Maximum="{TemplateBinding Maximum}"
                            Value="{TemplateBinding Value}">
-                            <Track.Thumb>
-                                <Thumb Width="40" Height="40">
-                                    <Thumb.Template>
-                                        <ControlTemplate TargetType="Thumb">
-                                            <Image Source="Images/Nidec.png"
+                                <Track.Thumb>
+                                    <Thumb Width="40" Height="40">
+                                        <Thumb.Template>
+                                            <ControlTemplate TargetType="Thumb">
+                                                <Image Source="Images/Nidec.png"
                                                Stretch="Uniform"
                                                RenderTransformOrigin="0.5,0.5"/>
-                                        </ControlTemplate>
-                                    </Thumb.Template>
-                                </Thumb>
-                            </Track.Thumb>
-                        </Track>
-                    </Grid>
-                </ControlTemplate>
+                                            </ControlTemplate>
+                                        </Thumb.Template>
+                                    </Thumb>
+                                </Track.Thumb>
+                            </Track>
+                        </Grid>
+                    </ControlTemplate>
                 </Slider.Template>
             </Slider>
+            <TextBlock Text="{Binding VerticalStageValue2}" 
+               FontSize="14" 
+               Foreground="Green"
+               Canvas.Left="{Binding VerticalSliderLeft2}" 
+               Canvas.Top="{Binding VerticalSliderTop2}" />
         </Canvas>
+
     </Grid>
 </UserControl>

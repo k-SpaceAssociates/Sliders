@@ -8,6 +8,6 @@
         mc:Ignorable="d"
         Title="SliderLauncher" Height="450" Width="800">
     <Grid>
-        <sliders:SliderControl />
+        <sliders:SliderControl x:Name="sliderControl" />
     </Grid>
 </Window>
