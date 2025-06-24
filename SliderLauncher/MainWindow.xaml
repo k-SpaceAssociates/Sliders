@@ -25,6 +25,8 @@
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="Auto"/>
                 <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
+                <!-- Add this -->
             </Grid.ColumnDefinitions>
 
             <!-- IP Address -->
@@ -42,6 +44,10 @@
                     Grid.Column="1"
                     HorizontalAlignment="Left"
                     Margin="0,5,0,0"/>
+            <CheckBox Grid.Row="2" Grid.Column="2" 
+          Content="Auto Launch" 
+          IsChecked="{Binding AutoLaunch, Mode=TwoWay}" 
+          Margin="0,5,0,0"/>
         </Grid>
 
         <!-- SliderControl -->

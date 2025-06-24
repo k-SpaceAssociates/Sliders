@@ -19,12 +19,13 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Windows.Threading;
 
+
 namespace SliderLauncher
 {
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
-    public partial class MainWindow : Window
+    public partial class MainWindow : Window, INotifyPropertyChanged
     {
         private static readonly ILog log = LogManager.GetLogger(typeof(MainWindow));
         private readonly DispatcherTimer _timer = new();
@@ -33,6 +34,7 @@ namespace SliderLauncher
         private bool _isRunning = false;
         private SliderControlViewModel vm;
         private int _stageUpdateIndex = 0;
+        bool connected = false;
 
         string iPAddressInput = "localhost";
         string IPAddressInput
@@ -47,9 +49,26 @@ namespace SliderLauncher
             get => port;
             set => port = value;
         }
+
+        private bool autoLaunch = false;
+        public bool AutoLaunch
+        {
+            get => autoLaunch;
+            set
+            {
+                if (autoLaunch != value)
+                {
+                    autoLaunch = value;
+                    OnPropertyChanged(nameof(AutoLaunch));
+                }
+            }
+        }
+
         public MainWindow()
         {
             InitializeComponent();
+            DataContext = this;
+            AutoLaunch = Properties.Settings.Default.AutoLaunch;
             IPAddressTextBox.Text = Properties.Settings.Default.IPAddress;
             PortTextBox.Text = Properties.Settings.Default.Port.ToString();
             if (int.TryParse(PortTextBox.Text, out int parsedPort))
@@ -66,7 +85,8 @@ namespace SliderLauncher
             sliderControl.DataContext = vm;
             if (!vm.Dummy)
             {
-                //ClientConnect(); Auto connect on startup
+                if(AutoLaunch)
+                  ClientConnect(); //Auto connect on startup
                 vm._stepSize =1800 / (36 / 0.05); // update every 50ms
                 _timer.Interval = TimeSpan.FromMilliseconds(200);
                 _timer.Tick += (s, e) => RunCommands();
@@ -75,6 +95,14 @@ namespace SliderLauncher
 
             this.Closing += MainWindow_Closing;
         }
+
+        public event PropertyChangedEventHandler? PropertyChanged;
+
+        protected void OnPropertyChanged(string propertyName)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
+
         bool closeCheck = false;
         private void MainWindow_Closing(object? sender, CancelEventArgs e)
         {
@@ -155,7 +183,7 @@ namespace SliderLauncher
 
         private void Connect_Click(object sender, RoutedEventArgs e)
         {
-            ClientConnect();
+            if(!connected) ClientConnect();
         }
         private void ClientConnect()
         {
@@ -172,10 +200,11 @@ namespace SliderLauncher
                 AppendOutput("Invalid port number.");
                 return;
             }
+            Properties.Settings.Default.AutoLaunch = AutoLaunch;
             Properties.Settings.Default.Save(); // Save the port setting
             // bool connected = client.Connect("localhost", 49215, out var response, out var ret);
             //bool connected = client.Connect("192.168.3.10", 49215, out var response, out var ret);
-            bool connected = client.Connect(IPAddressInput, Port, out var response, out var ret);
+            connected = client.Connect(IPAddressInput, Port, out var response, out var ret);
             Debug.WriteLine(connected ? $"Connected.\nResponse: {response}\nRet: {ret}" : response);
         }
 
