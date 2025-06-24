@@ -15,11 +15,34 @@ namespace ClientTestApp
             InitializeComponent();
         }
 
+        string iPAddressInput = "localhost";
+        string IPAddressInput
+        {
+            get => iPAddressInput;
+            set => IPAddressInput = value;
+        }
+
+        int port = 49215;
+        int Port
+        {
+            get => port;
+            set => port = value;
+        }
+
         private void Connect_Click(object sender, RoutedEventArgs e)
         {
+            iPAddressInput = IPAddressTextBox.Text;
+
+            if (int.TryParse(PortTextBox.Text, out int parsedPort))
+                port = parsedPort;
+            else
+            {
+                AppendOutput("Invalid port number.");
+                return;
+            }
             AppendOutput("Attempting to connect...");
-            if (cmdClient.ConnectToServer("192.168.3.10", 49215))
-            //if (cmdClient.ConnectToServer("localhost", 49215))
+            //if (cmdClient.ConnectToServer("192.168.3.10", 49215))
+            if (cmdClient.ConnectToServer(IPAddressInput, port))
             {
                 string response = "";
                 var ret = cmdClient.GetConnectResponse(ref response);
