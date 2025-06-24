@@ -33,14 +33,40 @@ namespace SliderLauncher
         private bool _isRunning = false;
         private SliderControlViewModel vm;
         private int _stageUpdateIndex = 0;
+
+        string iPAddressInput = "localhost";
+        string IPAddressInput
+        {
+            get => iPAddressInput;
+            set => iPAddressInput = value;
+        }
+
+        int port = 49215;
+        int Port
+        {
+            get => port;
+            set => port = value;
+        }
         public MainWindow()
         {
             InitializeComponent();
+            IPAddressTextBox.Text = Properties.Settings.Default.IPAddress;
+            PortTextBox.Text = Properties.Settings.Default.Port.ToString();
+            if (int.TryParse(PortTextBox.Text, out int parsedPort))
+            {
+                Port = parsedPort;
+            }
+            else
+            {
+                AppendOutput("Invalid port number.");
+                return;
+            }
+            IPAddressInput= IPAddressTextBox.Text;
             vm = new SliderControlViewModel();
             sliderControl.DataContext = vm;
             if (!vm.Dummy)
             {
-                ClientConnect();
+                //ClientConnect(); Auto connect on startup
                 vm._stepSize =1800 / (36 / 0.05); // update every 50ms
                 _timer.Interval = TimeSpan.FromMilliseconds(200);
                 _timer.Tick += (s, e) => RunCommands();
@@ -126,10 +152,30 @@ namespace SliderLauncher
                 _isRunning = false;
             }
         }
+
+        private void Connect_Click(object sender, RoutedEventArgs e)
+        {
+            ClientConnect();
+        }
         private void ClientConnect()
         {
-           // bool connected = client.Connect("localhost", 49215, out var response, out var ret);
-            bool connected = client.Connect("192.168.3.10", 49215, out var response, out var ret);
+            IPAddressInput = IPAddressTextBox.Text;
+            Properties.Settings.Default.IPAddress = IPAddressInput;
+
+            if (int.TryParse(PortTextBox.Text, out int parsedPort))
+            {
+                Port = parsedPort;
+                Properties.Settings.Default.Port = Port;
+            }
+            else
+            {
+                AppendOutput("Invalid port number.");
+                return;
+            }
+            Properties.Settings.Default.Save(); // Save the port setting
+            // bool connected = client.Connect("localhost", 49215, out var response, out var ret);
+            //bool connected = client.Connect("192.168.3.10", 49215, out var response, out var ret);
+            bool connected = client.Connect(IPAddressInput, Port, out var response, out var ret);
             Debug.WriteLine(connected ? $"Connected.\nResponse: {response}\nRet: {ret}" : response);
         }
 

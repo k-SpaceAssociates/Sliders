@@ -19,7 +19,7 @@ namespace ClientTestApp
         string IPAddressInput
         {
             get => iPAddressInput;
-            set => IPAddressInput = value;
+            set => iPAddressInput = value;
         }
 
         int port = 49215;
@@ -31,10 +31,10 @@ namespace ClientTestApp
 
         private void Connect_Click(object sender, RoutedEventArgs e)
         {
-            iPAddressInput = IPAddressTextBox.Text;
+            IPAddressInput = IPAddressTextBox.Text;
 
             if (int.TryParse(PortTextBox.Text, out int parsedPort))
-                port = parsedPort;
+                Port = parsedPort;
             else
             {
                 AppendOutput("Invalid port number.");
@@ -42,7 +42,7 @@ namespace ClientTestApp
             }
             AppendOutput("Attempting to connect...");
             //if (cmdClient.ConnectToServer("192.168.3.10", 49215))
-            if (cmdClient.ConnectToServer(IPAddressInput, port))
+            if (cmdClient.ConnectToServer(IPAddressInput, Port))
             {
                 string response = "";
                 var ret = cmdClient.GetConnectResponse(ref response);

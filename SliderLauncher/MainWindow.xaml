@@ -7,7 +7,48 @@
         xmlns:sliders="clr-namespace:Sliders;assembly=Sliders"
         mc:Ignorable="d"
         Title="SliderLauncher" Height="450" Width="800">
-    <Grid>
-        <sliders:SliderControl x:Name="sliderControl" />
+    <Grid Margin="10">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <!-- Connection Panel -->
+            <RowDefinition Height="*"/>
+            <!-- SliderControl -->
+        </Grid.RowDefinitions>
+
+        <!-- Refactored Connection Settings -->
+        <Grid Grid.Row="0" Margin="0,0,0,10">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+
+            <!-- IP Address -->
+            <TextBlock Text="IP Address:" Grid.Row="0" Grid.Column="0" Margin="0,0,10,5" VerticalAlignment="Center"/>
+            <TextBox x:Name="IPAddressTextBox" Text="localhost" Grid.Row="0" Grid.Column="1" Margin="0,0,0,5"/>
+
+            <!-- Port -->
+            <TextBlock Text="Port:" Grid.Row="1" Grid.Column="0" Margin="0,0,10,5" VerticalAlignment="Center"/>
+            <TextBox x:Name="PortTextBox" Text="49215" Grid.Row="1" Grid.Column="1" Margin="0,0,0,5"/>
+
+            <!-- Connect Button -->
+            <Button Content="Connect"
+                    Click="Connect_Click"
+                    Grid.Row="2"
+                    Grid.Column="1"
+                    HorizontalAlignment="Left"
+                    Margin="0,5,0,0"/>
+        </Grid>
+
+        <!-- SliderControl -->
+        <Grid Grid.Row="1">
+            <sliders:SliderControl x:Name="sliderControl"
+                                   HorizontalAlignment="Stretch"
+                                   VerticalAlignment="Stretch"/>
+        </Grid>
     </Grid>
 </Window>
