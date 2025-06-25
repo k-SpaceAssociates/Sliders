@@ -12,7 +12,7 @@ namespace Sliders
 
         private readonly DispatcherTimer _timer = new();
         public const int DurationInSeconds = 36;
-        public const double HMaxValue = 1800;
+        public const double HMaxValue = 2000;
         public const double VMaxValue = 100;
         private const double CanvasWidth = 740; // Approximate usable width in pixels
         private const double CanvasHeight = 100; // Approximate usable height in pixels

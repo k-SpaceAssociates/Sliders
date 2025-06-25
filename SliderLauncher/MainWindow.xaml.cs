@@ -87,7 +87,7 @@ namespace SliderLauncher
             {
                 if(AutoLaunch)
                   ClientConnect(); //Auto connect on startup
-                vm._stepSize =1800 / (36 / 0.05); // update every 50ms
+                vm._stepSize =2000 / (36 / 0.05); // update every 50ms
                 _timer.Interval = TimeSpan.FromMilliseconds(200);
                 _timer.Tick += (s, e) => RunCommands();
                 _timer.Start();

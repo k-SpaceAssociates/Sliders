@@ -75,7 +75,7 @@
             <TextBlock Text="{Binding SliderValue}" Foreground="Red" FontSize="16"/>
             <TextBlock Text="{Binding SliderMinimum}" Foreground="Blue" FontSize="16"/>
         </StackPanel>
-        <TextBlock Text="{Binding SliderMaximum}" Foreground="Green" FontSize="16" HorizontalAlignment="Right" Margin="30"/>
+        <TextBlock Text="{Binding SliderMaximum}" Foreground="Green" FontSize="16" HorizontalAlignment="Right" Margin="0,32,40,0"/>
 
         <!-- Bottom Horizontal Slider -->
         <Slider Grid.Row="2"
