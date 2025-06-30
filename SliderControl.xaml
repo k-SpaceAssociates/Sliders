@@ -68,12 +68,12 @@
         <Slider Grid.Row="1"
         Minimum="{Binding SliderMinimum}"
         Maximum="{Binding SliderMaximum}"
-        Value="{Binding SliderValue, Mode=TwoWay}"
+        Value="{Binding SliderValue, Mode=TwoWay, PresentationTraceSources.TraceLevel=High}"
         Height="0"
         Margin="20,10"
         Foreground="Blue"/>
         <StackPanel VerticalAlignment="Top" HorizontalAlignment="Left" Margin="10">
-            <TextBlock Text="{Binding Path=SliderValue}" Foreground="Red" FontSize="16"/>
+            <TextBlock Text="{Binding SliderValue, PresentationTraceSources.TraceLevel=High}" FontSize="20" Foreground="Red"/>
             <TextBlock Text="{Binding SliderMinimum}" Foreground="Blue" FontSize="16"/>
         </StackPanel>
         <TextBlock Text="{Binding SliderMaximum}" Foreground="Green" FontSize="16" HorizontalAlignment="Right" Margin="0,32,40,0"/>
