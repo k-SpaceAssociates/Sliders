@@ -3,6 +3,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:toolkit="http://schemas.microsoft.com/xaml/behaviors"
         xmlns:local="clr-namespace:SliderLauncher"
         xmlns:sliders="clr-namespace:Sliders;assembly=Sliders"
         mc:Ignorable="d"
@@ -21,6 +22,7 @@
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
+                
             </Grid.RowDefinitions>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="Auto"/>
@@ -31,20 +33,37 @@
 
             <!-- IP Address -->
             <TextBlock Text="IP Address:" Grid.Row="0" Grid.Column="0" Margin="0,0,10,5" VerticalAlignment="Center"/>
-            <TextBox x:Name="IPAddressTextBox" Text="localhost" Grid.Row="0" Grid.Column="1" Margin="0,0,0,5"/>
+            <TextBox x:Name="IPAddressTextBox" Grid.Row="0" Grid.Column="1" Margin="0,0,0,5">
+                <TextBox.Text>
+                    <Binding Path="IpAddress" Mode="TwoWay" UpdateSourceTrigger="LostFocus">
+                        <Binding.ValidationRules>
+                            <local:IpAddressOrHostValidationRule />
+                        </Binding.ValidationRules>
+                    </Binding>
+                </TextBox.Text>
+            </TextBox>
 
             <!-- Port -->
             <TextBlock Text="Port:" Grid.Row="1" Grid.Column="0" Margin="0,0,10,5" VerticalAlignment="Center"/>
-            <TextBox x:Name="PortTextBox" Text="49215" Grid.Row="1" Grid.Column="1" Margin="0,0,0,5"/>
+            <TextBox x:Name="PortTextBox" Grid.Row="1" Grid.Column="1" Margin="0,0,0,5">
+                <TextBox.Text>
+                    <Binding Path="Port" Mode="TwoWay" UpdateSourceTrigger="PropertyChanged">
+                        <Binding.ValidationRules>
+                            <local:PortValidationRule />
+                        </Binding.ValidationRules>
+                    </Binding>
+                </TextBox.Text>
+            </TextBox>
 
+            <TextBox Text="{Binding Output}" Grid.Row="2" Grid.Column="1" Margin="60,0,0,5" AcceptsReturn="True" TextWrapping="Wrap"/>
             <!-- Connect Button -->
             <Button Content="Connect"
-                    Click="Connect_Click"
-                    Grid.Row="2"
+                    Command="{Binding ConnectCommand}" 
+                    Grid.Row="3"
                     Grid.Column="1"
                     HorizontalAlignment="Left"
-                    Margin="0,5,0,0"/>
-            <CheckBox Grid.Row="2" Grid.Column="2" 
+                    Margin="0,0,0,0"/>
+            <CheckBox Grid.Row="3" Grid.Column="2" 
           Content="Auto Launch" 
           IsChecked="{Binding AutoLaunch, Mode=TwoWay}" 
           Margin="0,5,0,0"/>
