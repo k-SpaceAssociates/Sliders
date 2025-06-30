@@ -1,7 +1,11 @@
 ﻿<UserControl x:Class="Sliders.SliderControl"
+             x:Name="Root" 
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:local="clr-namespace:Sliders"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d"
              Height="250" Width="800">
     <Grid Background="White">
         <Grid.RowDefinitions>
@@ -68,15 +72,20 @@
         <Slider Grid.Row="1"
         Minimum="{Binding SliderMinimum}"
         Maximum="{Binding SliderMaximum}"
-        Value="{Binding SliderValue, Mode=TwoWay, PresentationTraceSources.TraceLevel=High}"
+        Value="{Binding DataContext.SliderValue, ElementName=Root, Mode=TwoWay, PresentationTraceSources.TraceLevel=High}"
         Height="0"
         Margin="20,10"
         Foreground="Blue"/>
         <StackPanel VerticalAlignment="Top" HorizontalAlignment="Left" Margin="10">
-            <TextBlock Text="{Binding SliderValue, PresentationTraceSources.TraceLevel=High}" FontSize="20" Foreground="Red"/>
+            <TextBlock 
+    Text="{Binding DataContext.SliderValue, ElementName=Root, Mode=TwoWay, PresentationTraceSources.TraceLevel=High}"
+          Foreground="Green" FontSize="16" HorizontalAlignment="Right" Margin="0,32,40,0"/> 
+
             <TextBlock Text="{Binding SliderMinimum}" Foreground="Blue" FontSize="16"/>
         </StackPanel>
-        <TextBlock Text="{Binding SliderMaximum}" Foreground="Green" FontSize="16" HorizontalAlignment="Right" Margin="0,32,40,0"/>
+
+        <TextBlock Text="{Binding DataContext.SliderValue, ElementName=Root, Mode=TwoWay}" 
+          Foreground="Green" FontSize="16" HorizontalAlignment="Right" Margin="0,32,40,0"/>
 
         <!-- Bottom Horizontal Slider -->
         <Slider Grid.Row="2"

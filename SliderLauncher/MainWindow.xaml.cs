@@ -41,17 +41,15 @@ namespace SliderLauncher
             // DataContext = new TcpClientViewModel();
             vm = new TcpClientViewModel();
             this.DataContext = vm;              // ✅ Connect window XAML to ViewModel
-            this.sliderControl.Loaded += (s, e) =>
-            {
-                sliderControl.DataContext = vm.SliderVM;
-                Debug.WriteLine("sliderControl.DataContext assigned in Loaded event.");
-            }; // ✅ Connect sliderControl to same ViewModel
+            this.sliderControl.DataContext = vm.SliderVM;
+           // ✅ Connect sliderControl to same ViewModel
            // DataContext = vm;
            // sliderControl.DataContext = vm.SliderVM;
 
             //AutoLaunch = Properties.Settings.Default.AutoLaunch;
             this.Loaded += MainWindow_Loaded;
             this.Closing += MainWindow_Closing;
+
         }
 
         public event PropertyChangedEventHandler? PropertyChanged;
