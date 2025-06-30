@@ -33,11 +33,22 @@ namespace SliderLauncher
     public partial class MainWindow : Window
     {
 
+        private readonly TcpClientViewModel vm;
         public MainWindow()
         {
             InitializeComponent();
             // DataContext = this;
-            DataContext = new TcpClientViewModel();
+            // DataContext = new TcpClientViewModel();
+            vm = new TcpClientViewModel();
+            this.DataContext = vm;              // ✅ Connect window XAML to ViewModel
+            this.sliderControl.Loaded += (s, e) =>
+            {
+                sliderControl.DataContext = vm.SliderVM;
+                Debug.WriteLine("sliderControl.DataContext assigned in Loaded event.");
+            }; // ✅ Connect sliderControl to same ViewModel
+           // DataContext = vm;
+           // sliderControl.DataContext = vm.SliderVM;
+
             //AutoLaunch = Properties.Settings.Default.AutoLaunch;
             this.Loaded += MainWindow_Loaded;
             this.Closing += MainWindow_Closing;
@@ -46,30 +57,22 @@ namespace SliderLauncher
         public event PropertyChangedEventHandler? PropertyChanged;
 
         bool closeCheck = false;
+
+
         private void MainWindow_Closing(object? sender, CancelEventArgs e)
         {
-            if (DataContext is TcpClientViewModel vm2)
+            bool allowClose = vm.OnClosing();
+            if (!allowClose)
             {
-                bool allowClose = vm2.OnClosing(); // calls inner SliderControlViewModel.OnClosing()
-
-                if (!allowClose)
-                {
-                    e.Cancel = true;
-                    return;
-                }
-                vm2.SaveAllSettings();
+                e.Cancel = true;
+                return;
             }
-
+            vm.SaveAllSettings();
         }
 
         private void MainWindow_Loaded(object sender, RoutedEventArgs e)
         {
-            if (DataContext is TcpClientViewModel vm2)
-            {
-                vm2.LoadAllSettings();
-                //if (vm2.AutoLaunch)
-                //    vm2.ConnectCommand.Execute(null); // if auto-launch logic is needed
-            }
+            vm.LoadAllSettings();
         }
         protected override void OnClosed(EventArgs e)
         {

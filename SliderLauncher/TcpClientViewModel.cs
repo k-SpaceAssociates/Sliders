@@ -30,7 +30,8 @@ namespace SliderLauncher
         private TcpClient? _client;
         private NetworkStream? _stream;
 
-        public SliderControlViewModel SliderViewModel { get; } = new();
+        //public SliderControlViewModel SliderViewModel { get; } = new();
+        public SliderControlViewModel SliderVM { get; } = new SliderControlViewModel();
 
         [ObservableProperty]
         private string ipAddress = "127.0.0.1";
@@ -234,6 +235,7 @@ namespace SliderLauncher
                     if (vm.StagePositions.Count < 4)
                     {
                         vm.StagePositions.Add(newValue); // Add until you have 4 items
+                        SliderVM.StagePositions.Add(newValue);
                     }
                     else
                     {
@@ -360,7 +362,7 @@ namespace SliderLauncher
             }
 
             // Forward to child view model for graceful shutdown
-            return SliderViewModel?.OnClosing() ?? true;
+            return SliderVM?.OnClosing() ?? true;
         }
     }
 
