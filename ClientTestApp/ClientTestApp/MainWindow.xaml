@@ -21,7 +21,7 @@
             <TextBlock Text="IP Address:" Grid.Row="0" Grid.Column="0" Margin="0,0,10,5" VerticalAlignment="Center"/>
             <TextBox x:Name="IPAddressTextBox" Grid.Row="0" Grid.Column="1" Margin="0,0,0,5">
                 <TextBox.Text>
-                    <Binding Path="IpAddress" Mode="TwoWay" UpdateSourceTrigger="LostFocus">
+                    <Binding Path="IPAddress" Mode="TwoWay" UpdateSourceTrigger="LostFocus">
                         <Binding.ValidationRules>
                             <local:IpAddressOrHostValidationRule />
                         </Binding.ValidationRules>

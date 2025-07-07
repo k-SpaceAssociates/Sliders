@@ -25,7 +25,7 @@ namespace ClientTestApp
         private NetworkStream? _stream;
 
         [ObservableProperty]
-        private string ipAddress = "127.0.0.1";
+        private string iPAddress = "127.0.0.1";
 
         [ObservableProperty]
         private int port = 49215;
@@ -58,9 +58,9 @@ namespace ClientTestApp
             //try
             //{
             //    _client = new TcpClient();
-            //    await _client.ConnectAsync(IpAddress, Port);
+            //    await _client.ConnectAsync(IPAddress, Port);
             //    //_stream = _client.GetStream();
-            //    Output += $"Connected to {IpAddress}:{Port}\n";
+            //    Output += $"Connected to {IPAddress}:{Port}\n";
             //    Debug.WriteLine(Output);
             //}
             //catch (Exception ex)
@@ -155,9 +155,9 @@ namespace ClientTestApp
             Properties.Settings.Default.Save(); // Save the port setting
             // bool connected = client.Connect("localhost", 49215, out var response, out var ret);
             //bool connected = client.Connect("192.168.3.10", 49215, out var response, out var ret);
-            connected = client.Connect(IpAddress, Port, out var response, out var ret);
+            connected = client.Connect(IPAddress, Port, out var response, out var ret);
             Debug.WriteLine(connected ? $"Connected.\nResponse: {response}\nRet: {ret}" : response);
-            Output += $"Connected to {IpAddress}:{Port}\n";
+            Output += $"Connected to {IPAddress}:{Port}\n";
             Debug.WriteLine(Output);
         }
 
