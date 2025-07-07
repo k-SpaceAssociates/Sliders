@@ -3,9 +3,10 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:toolkit="http://schemas.microsoft.com/xaml/behaviors"
         xmlns:local="clr-namespace:ClientTestApp"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
+        Title="ClientTestApp" Height="450" Width="800">
 
     <Grid Margin="10">
         <Grid.RowDefinitions>
@@ -17,26 +18,58 @@
 
         <!-- Connection Settings -->
         <StackPanel Grid.Row="0" Margin="0,0,0,10">
-            <TextBlock Text="IP Address:" Margin="0,0,0,5"/>
-            <TextBox x:Name="IPAddressTextBox" Text="localhost" Margin="0,0,0,10"/>
+            <TextBlock Text="IP Address:" Grid.Row="0" Grid.Column="0" Margin="0,0,10,5" VerticalAlignment="Center"/>
+            <TextBox x:Name="IPAddressTextBox" Grid.Row="0" Grid.Column="1" Margin="0,0,0,5">
+                <TextBox.Text>
+                    <Binding Path="IpAddress" Mode="TwoWay" UpdateSourceTrigger="LostFocus">
+                        <Binding.ValidationRules>
+                            <local:IpAddressOrHostValidationRule />
+                        </Binding.ValidationRules>
+                    </Binding>
+                </TextBox.Text>
+            </TextBox>
 
-            <TextBlock Text="Port:" Margin="0,0,0,5"/>
-            <TextBox x:Name="PortTextBox" Text="49215" Margin="0,0,0,10"/>
+            <!-- Port -->
+            <TextBlock Text="Port:" Grid.Row="1" Grid.Column="0" Margin="0,0,10,5" VerticalAlignment="Center"/>
+            <TextBox x:Name="PortTextBox" Grid.Row="1" Grid.Column="1" Margin="0,0,0,5">
+                <TextBox.Text>
+                    <Binding Path="Port" Mode="TwoWay" UpdateSourceTrigger="PropertyChanged">
+                        <Binding.ValidationRules>
+                            <local:PortValidationRule />
+                        </Binding.ValidationRules>
+                    </Binding>
+                </TextBox.Text>
+            </TextBox>
+            <!-- Connect Button -->
+            <Button Content="Connect"
+                    Command="{Binding ConnectCommand}" 
+                    Grid.Row="3"
+                    Grid.Column="1"
+                    HorizontalAlignment="Left"
+                    Margin="0,0,0,0"/>
 
-            <Button Content="Connect" Click="Connect_Click" HorizontalAlignment="Left"/>
         </StackPanel>
 
         <!-- Command and Response Area -->
         <StackPanel Grid.Row="1">
             <TextBlock Text="Command:" Margin="0,0,0,5"/>
-            <TextBox x:Name="CommandInput" Height="25"/>
 
+            <TextBox Text="{Binding Input}" x:Name="InputBox"
+                     Height="25"
+                     AcceptsReturn="True"
+                     TextWrapping="Wrap"
+                     VerticalScrollBarVisibility="Auto"/>
+            
             <StackPanel Orientation="Horizontal" Margin="0,5,0,5">
-                <Button Content="Send" Width="100" Margin="10,0,0,0" Click="Send_Click"/>
+                <Button Content="Send"
+                    Command="{Binding SendCommand}" 
+                    HorizontalAlignment="Left"
+                    Margin="0,0,0,0"/>
+                
             </StackPanel>
 
             <TextBlock Text="Response:" Margin="0,10,0,5"/>
-            <TextBox x:Name="OutputBox"
+            <TextBox Text="{Binding Output}" x:Name="OutputBox"
                      Height="200"
                      AcceptsReturn="True"
                      TextWrapping="Wrap"
