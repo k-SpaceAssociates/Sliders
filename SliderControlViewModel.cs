@@ -43,7 +43,7 @@ namespace Sliders
         ///////////////////////////////////////////////////////////////////////////
 
         [ObservableProperty]
-        private bool dummy = true; //dummy when true will animate the slider on a timer with fake data on the horizontal sliders and non on veritcal except UI input
+        private bool dummy = false; //dummy when true will animate the slider on a timer with fake data on the horizontal sliders and non on veritcal except UI input
 
         [ObservableProperty]
         private bool fakeStageHoriz = true; //fakeStageHoriz when true will tell the stage controller to fake the horizontal stage positions

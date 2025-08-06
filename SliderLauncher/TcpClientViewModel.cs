@@ -22,17 +22,15 @@ namespace SliderLauncher
         private static readonly ILog log = LogManager.GetLogger(typeof(MainWindow));
         private readonly DispatcherTimer _timer = new();
         private readonly kSATxtCmdClient cmdClient = new();
-        CommandClientHandler client = new CommandClientHandler();
+        private readonly CommandClientHandler client = new();
+        private readonly SliderControlViewModel _sliderVM; // injected UI VM
+
         private bool _isRunning = false;
-        private SliderControlViewModel vm;
         private int _stageUpdateIndex = 0;
-        bool connected = false;
+        private bool connected = false;
         private TcpClient? _client;
         private NetworkStream? _stream;
         private bool verboseOutput = false; // Set to true for detailed debug output
-
-        //public SliderControlViewModel SliderViewModel { get; } = new();
-        public SliderControlViewModel SliderVM { get; } = new SliderControlViewModel();
 
         [ObservableProperty]
         private string ipAddress = "127.0.0.1";
@@ -44,12 +42,19 @@ namespace SliderLauncher
         private string output = "";
 
         [ObservableProperty]
+    private bool useStreaming = true; // ✅ Switch between streaming and polling
+
+        [ObservableProperty]
         private string inputMessage = "";
 
         [ObservableProperty]
         private bool autoLaunch = false;
 
-
+        // ✅ Constructor now takes SliderControlViewModel from MainWindow
+        public TcpClientViewModel(SliderControlViewModel sliderVM)
+        {
+            _sliderVM = sliderVM;
+        }
         partial void OnAutoLaunchChanged(bool value)
         {
             if (value)
@@ -60,47 +65,74 @@ namespace SliderLauncher
         }
 
         [RelayCommand]
-        private async Task ConnectAsync()
+        public async Task ConnectAsync()
         {
             Connect();
 
-            //For streaming support instead of command client
+            ////For streaming support instead of command client
             //try
             //{
             //    _client = new TcpClient();
             //    await _client.ConnectAsync(IpAddress, Port);
-            //    //_stream = _client.GetStream();
+            //    _stream = _client.GetStream();
+
             //    Output += $"Connected to {IpAddress}:{Port}\n";
             //    Debug.WriteLine(Output);
+
+            //    _ = Task.Run(() => ReadLoopAsync()); // fire and forget
             //}
             //catch (Exception ex)
             //{
             //    Output += $"Connection failed: {ex.Message}\n";
             //}
-            //IPAddressTextBox.Text = Properties.Settings.Default.IPAddress;
-            //PortTextBox.Text = Properties.Settings.Default.Port.ToString();
-            //if (int.TryParse(PortTextBox.Text, out int parsedPort))
-            //{
-            //    Port = parsedPort;
-            //}
-            //else
-            //{
-            //    AppendOutput("Invalid port number.");
-            //    return;
-            //}
 
-            vm = new SliderControlViewModel();
-            //sliderControl.DataContext = vm;
-            if (!vm.Dummy)
+            _timer.Interval = TimeSpan.FromMilliseconds(200);
+            _timer.Tick += (s, e) =>
             {
-                //if(AutoLaunch)
-                //ClientConnect(); //Auto connect on startup
-                vm._stepSize = 2000 / (36 / 0.05); // update every 50ms
-                _timer.Interval = TimeSpan.FromMilliseconds(200);
-                _timer.Tick += (s, e) => RunCommands();
-                _timer.Start();
-            }
+                RunCommands();
+                _sliderVM.UpdateSlider(); // push updates to UI-bound VM
+            };
+            _timer.Start();
         }
+
+        /// <summary>
+        /// Stream reading loop to handle incoming messages asynchronously.
+        /// </summary>
+        /// <returns></returns>
+        //private async Task ReadLoopAsync()
+        //{
+        //    var buffer = new byte[1024];
+        //    try
+        //    {
+        //        while (_client?.Connected == true)
+        //        {
+        //            int bytesRead = await _stream.ReadAsync(buffer, 0, buffer.Length);
+        //            if (bytesRead == 0) break; // connection closed
+
+        //            var message = Encoding.UTF8.GetString(buffer, 0, bytesRead);
+        //            ProcessIncomingMessage(message);
+        //        }
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        Output += $"Stream read error: {ex.Message}\n";
+        //    }
+        //}
+
+        //private void ProcessIncomingMessage(string message)
+        //{
+        //    // Parse and update UI-bound VM
+        //    Application.Current.Dispatcher.Invoke(() =>
+        //    {
+        //        _sliderVM.CurrentValue = ParseSliderValue(message);
+        //    });
+        //}
+
+        //private double ParseSliderValue(string message)
+        //{
+        //    // TODO: parse incoming protocol to extract value
+        //    return double.TryParse(message, out var value) ? value : 0;
+        //}
 
         [RelayCommand]
         private async Task SendAsync()
@@ -153,15 +185,15 @@ namespace SliderLauncher
 
             try
             {
-                foreach (var command in vm.CommandsToRun)
+                foreach (var command in _sliderVM.CommandsToRun)
                 {
                     if (!string.IsNullOrWhiteSpace(command))
                     {
                         if (command == "position")
                         {
-                            if (vm.StageList != null)
+                            if (_sliderVM.StageList != null)
                             {
-                                foreach (string stage in vm.StageList) //There will be no stages if connection is lost
+                                foreach (string stage in _sliderVM.StageList) //There will be no stages if connection is lost
                                 {
                                     Send(command + " " + stage);
                                 }
@@ -169,7 +201,7 @@ namespace SliderLauncher
                         }
                         else if (command == "fakeHpos")
                         {
-                           if(vm.FakeStageHoriz) Send(command + " 1"); //enable stage dummy data for horizontal position
+                           if(_sliderVM.FakeStageHoriz) Send(command + " 1"); //enable stage dummy data for horizontal position
                            else Send(command + " 0"); //disable stage dummy data for horizontal position
                         }
                         else
@@ -224,53 +256,53 @@ namespace SliderLauncher
             if (cmd == "list") //Assume list gets Stages available
             {
                 var stages = ConvertToList(response);
-                vm.StageList.Clear();
+                _sliderVM.StageList.Clear();
                 foreach (var stage in stages)
-                    vm.StageList.Add(stage);
+                    _sliderVM.StageList.Add(stage);
             }
             else if (cmd.StartsWith("position", StringComparison.OrdinalIgnoreCase))
             {
                 var stagePosition = cmd.Substring("position".Length).Trim();
-                //if(vm.StagePositions.Count == 4) vm.StagePositions.Clear(); //This will clear current info. and start getting next 4
+                //if(_sliderVM.StagePositions.Count == 4) _sliderVM.StagePositions.Clear(); //This will clear current info. and start getting next 4
 
                 var lines = response.Split(new[] { "\r\n" }, StringSplitOptions.RemoveEmptyEntries);
                 if (lines.Length > 0)
                 {
                     var newValue = lines[0];
 
-                    if (vm.StagePositions.Count < 4)
+                    if (_sliderVM.StagePositions.Count < 4)
                     {
-                        vm.StagePositions.Add(newValue); // Add until you have 4 items
-                        SliderVM.StagePositions.Add(newValue);
+                        _sliderVM.StagePositions.Add(newValue); // Add until you have 4 items
+                        //SliderVM.StagePositions.Add(newValue);
                     }
                     else
                     {
-                        vm.StagePositions[_stageUpdateIndex] = newValue; // Overwrite existing item
+                        _sliderVM.StagePositions[_stageUpdateIndex] = newValue; // Overwrite existing item
                     }
 
                     _stageUpdateIndex = (_stageUpdateIndex + 1) % 4; // Wrap index from 0 to 3
                 }
-                if (vm.StagePositions.Count == 4)
-                    vm.UpdateSlider();
+                if (_sliderVM.StagePositions.Count == 4)
+                    _sliderVM.UpdateSlider();
             }
             else if (cmd == "direction")
             {
                 var lines = response.Split(new[] { "\r\n" }, StringSplitOptions.RemoveEmptyEntries);
                 if (lines.Length > 0)
-                    vm.Direction = lines[0];
+                    _sliderVM.Direction = lines[0];
             }
 
             else if (cmd == "follow")
             {
                 if (response.IndexOf("off", StringComparison.OrdinalIgnoreCase) >= 0)
                 {
-                    vm.Follow = false;
+                    _sliderVM.Follow = false;
                 }
                 else if (response.IndexOf("on", StringComparison.OrdinalIgnoreCase) >= 0)
                 {
-                    vm.Follow = true;
+                    _sliderVM.Follow = true;
                 }
-                else vm.Follow = false;
+                else _sliderVM.Follow = false;
             }
             else if (cmd == "?")
             {
@@ -368,7 +400,7 @@ namespace SliderLauncher
             }
 
             // Forward to child view model for graceful shutdown
-            return SliderVM?.OnClosing() ?? true;
+            return _sliderVM?.OnClosing() ?? true;
         }
     }
 

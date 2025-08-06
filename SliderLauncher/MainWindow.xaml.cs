@@ -1,82 +1,60 @@
-﻿using kSATxtCmdNETSDk;
-using log4net;
-using SliderLauncher;
+﻿using SliderLauncher;
 using Sliders;
-using System.Collections.ObjectModel;
+using System;
 using System.ComponentModel;
-using System.ComponentModel.DataAnnotations;
-using System.Diagnostics;
-using System.Net.Quic;
-using System.Text;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
-using System.Windows.Threading;
-using CommunityToolkit.Mvvm.ComponentModel;
-using CommunityToolkit.Mvvm.Input;
-using System.Net.Sockets;
-using System.Threading.Tasks;
-
-
 
 namespace SliderLauncher
 {
-    /// <summary>
-    /// Interaction logic for MainWindow.xaml
-    /// </summary>
     public partial class MainWindow : Window
     {
+        private readonly SliderControlViewModel sliderVM;
+        private readonly TcpClientViewModel? tcpVM;
 
-        private readonly TcpClientViewModel vm;
         public MainWindow()
         {
             InitializeComponent();
-            // DataContext = this;
-            // DataContext = new TcpClientViewModel();
-            vm = new TcpClientViewModel();
-            this.DataContext = vm;              // ✅ Connect window XAML to ViewModel
-            this.sliderControl.DataContext = vm.SliderVM;
-           // ✅ Connect sliderControl to same ViewModel
-           // DataContext = vm;
-           // sliderControl.DataContext = vm.SliderVM;
 
-            //AutoLaunch = Properties.Settings.Default.AutoLaunch;
-            this.Loaded += MainWindow_Loaded;
-            this.Closing += MainWindow_Closing;
+            // Always create the UI-facing ViewModel
+            sliderVM = new SliderControlViewModel();
 
-        }
+            // Decide dummy or real mode at runtime
+            // true = simulate, false = connect to TCP
+            sliderVM.Dummy = false; // <-- change this to true for dummy mode
 
-        public event PropertyChangedEventHandler? PropertyChanged;
+            // Bind slider control's DataContext to the UI ViewModel
+            sliderControl.DataContext = sliderVM;
 
-        bool closeCheck = false;
-
-
-        private void MainWindow_Closing(object? sender, CancelEventArgs e)
-        {
-            bool allowClose = vm.OnClosing();
-            if (!allowClose)
+            if (!sliderVM.Dummy)
             {
-                e.Cancel = true;
-                return;
+                // Pass the UI ViewModel to TcpClientViewModel so it can push updates
+                tcpVM = new TcpClientViewModel(sliderVM);
             }
-            vm.SaveAllSettings();
+
+            Loaded += MainWindow_Loaded;
+            Closing += MainWindow_Closing;
         }
 
         private void MainWindow_Loaded(object sender, RoutedEventArgs e)
         {
-            vm.LoadAllSettings();
+            if (tcpVM != null)
+            {
+                _ = tcpVM.ConnectAsync(); // fire-and-forget
+            }
         }
-        protected override void OnClosed(EventArgs e)
-        {
 
-            //client.Close();
-            base.OnClosed(e);
+        private void MainWindow_Closing(object? sender, CancelEventArgs e)
+        {
+            if (tcpVM != null)
+            {
+                bool allowClose = tcpVM.OnClosing();
+                if (!allowClose)
+                {
+                    e.Cancel = true;
+                    return;
+                }
+                tcpVM.SaveAllSettings();
+            }
         }
     }
 }
