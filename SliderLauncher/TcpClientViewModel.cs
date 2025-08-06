@@ -29,6 +29,7 @@ namespace SliderLauncher
         bool connected = false;
         private TcpClient? _client;
         private NetworkStream? _stream;
+        private bool verboseOutput = false; // Set to true for detailed debug output
 
         //public SliderControlViewModel SliderViewModel { get; } = new();
         public SliderControlViewModel SliderVM { get; } = new SliderControlViewModel();
@@ -136,7 +137,7 @@ namespace SliderLauncher
                 byte[] buffer = new byte[1024];
                 int bytesRead = await _stream.ReadAsync(buffer, 0, buffer.Length);
                 string received = Encoding.UTF8.GetString(buffer, 0, bytesRead);
-                Output += $"Received: {received}\n";
+                if(verboseOutput) Output += $"Received: {received}\n";
             }
             catch (Exception ex)
             {
@@ -165,6 +166,11 @@ namespace SliderLauncher
                                     Send(command + " " + stage);
                                 }
                             }
+                        }
+                        else if (command == "fakeHpos")
+                        {
+                           if(vm.FakeStageHoriz) Send(command + " 1"); //enable stage dummy data for horizontal position
+                           else Send(command + " 0"); //disable stage dummy data for horizontal position
                         }
                         else
                         {
@@ -209,7 +215,7 @@ namespace SliderLauncher
         private void Send(string command)
         {
             bool sent = client.Send(command, out var response, out var ret);
-            Debug.WriteLine($"Ret: {ret}\nCommand: {command}\nResponse:{response}\n");
+            if (verboseOutput) Debug.WriteLine($"Ret: {ret}\nCommand: {command}\nResponse:{response}\n");
             AssignResults(command, response);
         }
 

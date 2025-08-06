@@ -25,6 +25,7 @@ namespace Sliders
         public ObservableCollection<string> CommandsToRun { get; } = new()
         {
             "list",
+            "fakeHpos",
             "direction",
             "position",
             //"follow", //Bug sending follow command does not get it only sets.
@@ -42,7 +43,10 @@ namespace Sliders
         ///////////////////////////////////////////////////////////////////////////
 
         [ObservableProperty]
-        private bool dummy = false; //dummy when false will animate the slider on a timer with fake data on the horizontal sliders and non on veritcal except UI input
+        private bool dummy = true; //dummy when true will animate the slider on a timer with fake data on the horizontal sliders and non on veritcal except UI input
+
+        [ObservableProperty]
+        private bool fakeStageHoriz = true; //fakeStageHoriz when true will tell the stage controller to fake the horizontal stage positions
 
         [ObservableProperty]
         private double sliderMinimum = 0;
@@ -50,8 +54,22 @@ namespace Sliders
         [ObservableProperty]
         private double sliderMaximum = 1800;
 
-        [ObservableProperty]
-        private double sliderValue;
+        //[ObservableProperty]
+        //private double sliderValue;
+        private double _sliderValue;
+        public double SliderValue
+        {
+            get => _sliderValue;
+            set
+            {
+                if (_sliderValue != value)
+                {
+                    _sliderValue = value;
+                    Debug.WriteLine($"[ViewModel] SliderValue set to {_sliderValue}");
+                    OnPropertyChanged(); // or OnPropertyChanged(nameof(SliderValue));
+                }
+            }
+        }
 
         [ObservableProperty]
         private double followerSliderValue;
@@ -87,9 +105,9 @@ namespace Sliders
         {
             if(dummy)
             {
-                _stepSize = HMaxValue / (DurationInSeconds / 0.05); // update every 50ms
+                _stepSize = 100;//Updated to make steps of 100 //HMaxValue / (DurationInSeconds / 0.05); // update every 50ms
 
-                _timer.Interval = TimeSpan.FromMilliseconds(50);
+                _timer.Interval = TimeSpan.FromMilliseconds(1000); //Slow down the dummy animation to 1 second per step to be more realistic
                 _timer.Tick += (s, e) => UpdateSlider();
                 _timer.Start();
             }
@@ -136,12 +154,14 @@ namespace Sliders
                 // Apply scaling to get pixel offset
                 VerticalSliderLeft1 = SliderValue * HScaleFactor;
                 VerticalSliderLeft2 = FollowerSliderValue * HScaleFactor;
+                Debug.WriteLine($"SliderValue: {SliderValue}, FollowerSliderValue: {FollowerSliderValue}");
+                Debug.WriteLine($"Vertical1: {VerticalSliderLeft1}, Vertical2: {VerticalSliderLeft2}");
             }
             else
             {
                 Application.Current.Dispatcher.Invoke(() =>
                 {
-                    if (StagePositions != null && StagePositions.Count == 4)
+                    if (StagePositions != null && StagePositions.Count == 4 && result[0] != double.Parse(StagePositions[0]))
                     {
                         result[0] = double.Parse(StagePositions[0]); //StageH1
                         SliderValue = result[0];
@@ -165,14 +185,16 @@ namespace Sliders
                         result[3] = double.Parse(StagePositions[3]); //StageV2
                         VerticalStageValue2 = result[3];
                         VerticalSliderTop2 = CanvasHeight - (result[3] - VerticalSliderMinimum);
+                        Debug.WriteLine($"SliderValue: {SliderValue}, FollowerSliderValue: {FollowerSliderValue}");
+                        Debug.WriteLine($"Vertical1: {VerticalSliderLeft1}, Vertical2: {VerticalSliderLeft2}");
                     }
                 });
-                Debug.WriteLine($"SliderValue: {SliderValue}, FollowerSliderValue: {FollowerSliderValue}");
-                Debug.WriteLine($"Vertical1: {VerticalSliderLeft1}, Vertical2: {VerticalSliderLeft2}");
+
             }
 
 
- 
+
+
 
             double vmidpoint = (VerticalSliderMinimum + VerticalSliderMaximum) / 2.0;
             double sliderHeight = 80; // as defined in XAML

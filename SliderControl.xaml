@@ -72,13 +72,13 @@
         <Slider Grid.Row="1"
         Minimum="{Binding SliderMinimum}"
         Maximum="{Binding SliderMaximum}"
-        Value="{Binding DataContext.SliderValue, ElementName=Root, Mode=TwoWay, PresentationTraceSources.TraceLevel=High}"
+        Value="{Binding DataContext.SliderValue, ElementName=Root, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, PresentationTraceSources.TraceLevel=High}"
         Height="0"
         Margin="20,10"
         Foreground="Blue"/>
         <StackPanel VerticalAlignment="Top" HorizontalAlignment="Left" Margin="10">
             <TextBlock 
-    Text="{Binding DataContext.SliderValue, ElementName=Root, Mode=TwoWay, PresentationTraceSources.TraceLevel=High}"
+    Text="{Binding DataContext.SliderValue, ElementName=Root, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, PresentationTraceSources.TraceLevel=High}"
           Foreground="Green" FontSize="16" HorizontalAlignment="Right" Margin="0,32,40,0"/> 
 
             <TextBlock Text="{Binding SliderMinimum}" Foreground="Blue" FontSize="16"/>
@@ -91,7 +91,7 @@
         <Slider Grid.Row="2"
         Minimum="{Binding SliderMinimum}"
         Maximum="{Binding SliderMaximum}"
-        Value="{Binding FollowerSliderValue, Mode=TwoWay}"
+        Value="{Binding FollowerSliderValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
         Height="0"
         Margin="20,10"
         Foreground="Green"/>
