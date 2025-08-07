@@ -42,8 +42,23 @@ namespace Sliders
         string? direction = "";
         ///////////////////////////////////////////////////////////////////////////
 
-        [ObservableProperty]
-        private bool dummy = false; //dummy when true will animate the slider on a timer with fake data on the horizontal sliders and non on veritcal except UI input
+        //[ObservableProperty]
+        //private bool dummy = false; //dummy when true will animate the slider on a timer with fake data on the horizontal sliders and no veritcal except UI input
+
+        private bool dummy = false; //dummy when true will animate the slider on a timer with fake data on the horizontal sliders and no veritcal except UI input
+        public bool Dummy
+        {
+            get => dummy;
+            set
+            {
+                if (dummy != value)
+                {
+                    dummy = value;
+                    Debug.WriteLine($"[ViewModel] Dummy set to {dummy}");
+                    OnPropertyChanged(); // or OnPropertyChanged(nameof(Dummy));
+                   }
+            }
+        }
 
         [ObservableProperty]
         private bool fakeStageHoriz = true; //fakeStageHoriz when true will tell the stage controller to fake the horizontal stage positions
@@ -103,7 +118,7 @@ namespace Sliders
 
         public SliderControlViewModel()
         {
-            if(dummy)
+            if(Dummy)
             {
                 _stepSize = 100;//Updated to make steps of 100 //HMaxValue / (DurationInSeconds / 0.05); // update every 50ms
 

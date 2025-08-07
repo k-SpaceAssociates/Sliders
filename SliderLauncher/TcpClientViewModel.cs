@@ -400,7 +400,7 @@ namespace SliderLauncher
             }
 
             // Forward to child view model for graceful shutdown
-            return _sliderVM?.OnClosing() ?? true;
+            return true;
         }
     }
 
