@@ -12,7 +12,9 @@ using System.Net.Sockets;
 using System.Text;
 using System.Threading.Tasks;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Threading;
+
 
 
 namespace SliderLauncher
@@ -27,6 +29,7 @@ namespace SliderLauncher
 
         private bool _isRunning = false;
         private int _stageUpdateIndex = 0;
+        private int _stageUpdateIndex2 = 0;
         private bool connected = false;
         private TcpClient? _client;
         private NetworkStream? _stream;
@@ -39,16 +42,19 @@ namespace SliderLauncher
         private int port = 49215;
 
         [ObservableProperty]
-        private string output = "";
+        private int streamport = 8000;
 
         [ObservableProperty]
-    private bool useStreaming = true; // ✅ Switch between streaming and polling
+        private string output = "";
 
         [ObservableProperty]
         private string inputMessage = "";
 
         [ObservableProperty]
         private bool autoLaunch = false;
+
+        [ObservableProperty]
+        private bool useStreaming = false; // ✅ Switch between streaming and polling
 
         // ✅ Constructor now takes SliderControlViewModel from MainWindow
         public TcpClientViewModel(SliderControlViewModel sliderVM)
@@ -64,75 +70,110 @@ namespace SliderLauncher
             }
         }
 
+        private CancellationTokenSource? _cts;
+
         [RelayCommand]
         public async Task ConnectAsync()
         {
-            Connect();
-
-            ////For streaming support instead of command client
-            //try
-            //{
-            //    _client = new TcpClient();
-            //    await _client.ConnectAsync(IpAddress, Port);
-            //    _stream = _client.GetStream();
-
-            //    Output += $"Connected to {IpAddress}:{Port}\n";
-            //    Debug.WriteLine(Output);
-
-            //    _ = Task.Run(() => ReadLoopAsync()); // fire and forget
-            //}
-            //catch (Exception ex)
-            //{
-            //    Output += $"Connection failed: {ex.Message}\n";
-            //}
-
-            _timer.Interval = TimeSpan.FromMilliseconds(200);
-            _timer.Tick += (s, e) =>
+            if (UseStreaming)
             {
-                RunCommands();
-                _sliderVM.UpdateSlider(); // push updates to UI-bound VM
-            };
-            _timer.Start();
+                _cts = new CancellationTokenSource();
+
+                try
+                {
+                    _client = new TcpClient();
+                    await _client.ConnectAsync(IpAddress, Streamport);
+
+                    if (_client.Connected)
+                    {
+                        _stream = _client.GetStream();
+                        Output += $"Connected to {IpAddress}:{Streamport}\n";
+                        Debug.WriteLine(Output);
+
+                        _ = Task.Run(() => ReadLoopAsync(_cts.Token)); // fire and forget
+                    }
+                    else
+                    {
+                        Output += $"Connection attempt failed: Unable to connect to {IpAddress}:{Streamport}\n";
+                        Debug.WriteLine(Output);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Output += $"Connection failed: {ex.Message}\n";
+                    Debug.WriteLine($"Connection failed: {ex}");
+                    // Show message box or raise an event to inform UI
+                    // MessageBox.Show($"Failed to connect to {IpAddress}:{Streamport}\n{ex.Message}", "Connection Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                }
+            }
+            else
+            {
+                Connect();
+
+                _timer.Interval = TimeSpan.FromMilliseconds(200);
+                _timer.Tick += (s, e) =>
+                {
+                    RunCommands();
+                    _sliderVM.UpdateSlider(); // push updates to UI-bound VM
+                };
+                _timer.Start();
+            }
         }
 
+        //////////////////////////////////////////////////////////////////////////////////
+        // Streaming support section
+        //////////////////////////////////////////////////////////////////////////////////
         /// <summary>
         /// Stream reading loop to handle incoming messages asynchronously.
         /// </summary>
         /// <returns></returns>
-        //private async Task ReadLoopAsync()
-        //{
-        //    var buffer = new byte[1024];
-        //    try
-        //    {
-        //        while (_client?.Connected == true)
-        //        {
-        //            int bytesRead = await _stream.ReadAsync(buffer, 0, buffer.Length);
-        //            if (bytesRead == 0) break; // connection closed
+        private async Task ReadLoopAsync(CancellationToken token)
+        {
+            var buffer = new byte[1024];
+            try
+            {
+                while (_client?.Connected == true && !token.IsCancellationRequested)
+                {
+                    int bytesRead = await _stream.ReadAsync(buffer, 0, buffer.Length);
+                    if (bytesRead == 0) break; // connection closed
 
-        //            var message = Encoding.UTF8.GetString(buffer, 0, bytesRead);
-        //            ProcessIncomingMessage(message);
-        //        }
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        Output += $"Stream read error: {ex.Message}\n";
-        //    }
-        //}
+                    var message = Encoding.UTF8.GetString(buffer, 0, bytesRead);
+                    ProcessIncomingMessage(message);
+                    Debug.WriteLine(message + "\n");
+                }
+            }
+            catch (OperationCanceledException)
+            {
+                Output += "Stream reading canceled.\n";
+            }
+            catch (Exception ex)
+            {
+                Output += $"Stream read error: {ex.Message}\n";
+            }
+        }
 
-        //private void ProcessIncomingMessage(string message)
-        //{
-        //    // Parse and update UI-bound VM
-        //    Application.Current.Dispatcher.Invoke(() =>
-        //    {
-        //        _sliderVM.CurrentValue = ParseSliderValue(message);
-        //    });
-        //}
+        public void Disconnect()
+        {
+            _cts?.Cancel();
+            _client?.Close();
+            _timer.Stop();
+        }
+        private void ProcessIncomingMessage(string message)
+        {
+            // Parse and update UI-bound VM
+            Application.Current.Dispatcher.Invoke(() =>
+            {
+                _sliderVM.CurrentValue = ParseSliderValue(message);
+            });
+        }
 
-        //private double ParseSliderValue(string message)
-        //{
-        //    // TODO: parse incoming protocol to extract value
-        //    return double.TryParse(message, out var value) ? value : 0;
-        //}
+        private double ParseSliderValue(string message)
+        {
+            // TODO: parse incoming protocol to extract value
+            return double.TryParse(message, out var value) ? value : 0;
+        }
+
+        //////////End Streaming support section///////////////////////////////////////////
 
         [RelayCommand]
         private async Task SendAsync()
@@ -179,6 +220,17 @@ namespace SliderLauncher
 
         public void RunCommands()
         {
+            _sliderVM.RegList.Clear();
+            _sliderVM.RegList.Add("1803"); //Add registers to read for vertical stages
+            _sliderVM.RegList.Add("1806");
+            _sliderVM.RegList.Add("1807");
+            _sliderVM.RegList.Add("1808");
+            _sliderVM.RegList.Add("1809");
+            _sliderVM.RegList.Add("1812");
+            _sliderVM.RegList.Add("1813");
+            _sliderVM.RegList.Add("1814");
+
+
             if (_isRunning)
                 return;
             _isRunning = true;
@@ -203,6 +255,22 @@ namespace SliderLauncher
                         {
                            if(_sliderVM.FakeStageHoriz) Send(command + " 1"); //enable stage dummy data for horizontal position
                            else Send(command + " 0"); //disable stage dummy data for horizontal position
+                        }
+                        if (command == "stageparminfo")
+                        {
+                            if (_sliderVM.StageList != null)
+                            {
+                                foreach (string reg in _sliderVM.RegList)
+                                {
+                                    foreach (string stage in _sliderVM.StageList) //There will be no stages if connection is lost
+                                    {
+                                        if (stage.StartsWith("StageV", StringComparison.OrdinalIgnoreCase)) //Only get registers for vertical stages
+                                        {
+                                           Send(command + " " + stage + " " + reg);
+                                        }
+                                    }
+                                }
+                            }
                         }
                         else
                         {
@@ -253,6 +321,7 @@ namespace SliderLauncher
 
         void AssignResults(string cmd, string response)
         {
+            if (response == "") { Output=$"Error: No response received\n"; Debug.WriteLine(Output); }
             if (cmd == "list") //Assume list gets Stages available
             {
                 var stages = ConvertToList(response);
@@ -270,7 +339,7 @@ namespace SliderLauncher
                 {
                     var newValue = lines[0];
 
-                    if (_sliderVM.StagePositions.Count < 4)
+                    if (_sliderVM.StagePositions.Count < _sliderVM.MaxStages)
                     {
                         _sliderVM.StagePositions.Add(newValue); // Add until you have 4 items
                         //SliderVM.StagePositions.Add(newValue);
@@ -280,9 +349,38 @@ namespace SliderLauncher
                         _sliderVM.StagePositions[_stageUpdateIndex] = newValue; // Overwrite existing item
                     }
 
-                    _stageUpdateIndex = (_stageUpdateIndex + 1) % 4; // Wrap index from 0 to 3
+                    _stageUpdateIndex = (_stageUpdateIndex + 1) % _sliderVM.MaxStages; // Wrap index from 0 to 3
                 }
-                if (_sliderVM.StagePositions.Count == 4)
+                if (_sliderVM.StagePositions.Count == _sliderVM.MaxStages)
+                    _sliderVM.UpdateSlider();
+            }
+            else if (cmd.StartsWith("stageparminfo", StringComparison.OrdinalIgnoreCase))
+            {
+
+                var lines = response.Split(new[] { "\r\n" }, StringSplitOptions.RemoveEmptyEntries);
+                if (lines.Length > 0)
+                {
+                    var newValue = lines[0];
+
+                    if (_sliderVM.StagePositions2.Count < _sliderVM.MaxStages && _sliderVM.RegVals.Count < 32)
+                    {
+                        foreach (var stage in _sliderVM.StageList)
+                        {
+                            if (stage.StartsWith("StageV", StringComparison.OrdinalIgnoreCase) && _sliderVM.RegVals.Count < 32)
+                            {
+                                _sliderVM.RegVals.Add(newValue); // Add until you have 2 stages items
+                                _sliderVM.RefreshRegValGrids();
+                            }
+                        }
+                    }
+                    else
+                    {
+                        _sliderVM.RegVals[_stageUpdateIndex2] = newValue; // Overwrite existing item
+                    }
+
+                    _stageUpdateIndex = (_stageUpdateIndex2 + 1) % _sliderVM.MaxStages; // Wrap index from 0 to 1
+                }
+                if (_sliderVM.StagePositions2.Count == _sliderVM.MaxStages)
                     _sliderVM.UpdateSlider();
             }
             else if (cmd == "direction")
@@ -291,7 +389,6 @@ namespace SliderLauncher
                 if (lines.Length > 0)
                     _sliderVM.Direction = lines[0];
             }
-
             else if (cmd == "follow")
             {
                 if (response.IndexOf("off", StringComparison.OrdinalIgnoreCase) >= 0)

@@ -28,18 +28,48 @@ namespace Sliders
             "fakeHpos",
             "direction",
             "position",
+            "stageparminfo",
             //"follow", //Bug sending follow command does not get it only sets.
         };
 
         public ObservableCollection<string> StageList { get; } = new() { };
-        int maxStages = 4;
+
+        [ObservableProperty]
+        private int maxStages = 4;
+
         public ObservableCollection<string> StagePositions { get; } = new() { };
 
-        [ObservableProperty]
-        bool follow = true;
+        public ObservableCollection<string> StagePositions2 { get; } = new() { };
+
+        public ObservableCollection<string> RegList { get; } = new() { };
+
+        public ObservableCollection<string> RegVals { get; } = new() { };
+
+        public ObservableCollection<RegValRow> RegValRows1 { get; } = new();
+        public ObservableCollection<RegValRow> RegValRows2 { get; } = new();
+
+        public void RefreshRegValGrids()
+        {
+            var padded = RegVals.ToList();
+
+            while (padded.Count < 32)
+                padded.Add(string.Empty); // Pad to 32 entries
+
+            var row1 = new RegValRow { Values = padded.Take(16).ToList() };
+            var row2 = new RegValRow { Values = padded.Skip(16).Take(16).ToList() };
+
+            RegValRows1.Clear();
+            RegValRows1.Add(row1);
+
+            RegValRows2.Clear();
+            RegValRows2.Add(row2);
+        }
 
         [ObservableProperty]
-        string? direction = "";
+        private bool follow = true;
+
+        [ObservableProperty]
+        private string? direction = "";
         ///////////////////////////////////////////////////////////////////////////
 
         //[ObservableProperty]
@@ -115,6 +145,9 @@ namespace Sliders
 
         [ObservableProperty]
         private bool v1803 = true;   // default true
+
+        [ObservableProperty]
+        private double currentValue;
 
         public SliderControlViewModel()
         {
