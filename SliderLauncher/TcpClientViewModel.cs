@@ -255,6 +255,22 @@ namespace SliderLauncher
                            if(_sliderVM.FakeStageHoriz) Send(command + " 1"); //enable stage dummy data for horizontal position
                            else Send(command + " 0"); //disable stage dummy data for horizontal position
                         }
+                        else if (command == "stageparminfo")
+                        {
+                            if (_sliderVM.StageList != null)
+                            {
+                                foreach (string reg in _sliderVM.RegList)
+                                {
+                                    foreach (string stage in _sliderVM.StageList) //There will be no stages if connection is lost
+                                    {
+                                        if (stage.StartsWith("StageV", StringComparison.OrdinalIgnoreCase)) //Only get registers for vertical stages
+                                        {
+                                           Send(command + " " + stage + " " + reg);
+                                        }
+                                    }
+                                }
+                            }
+                        }
                         else
                         {
                             Send(command);
@@ -322,7 +338,7 @@ namespace SliderLauncher
                 {
                     var newValue = lines[0];
 
-                    if (_sliderVM.StagePositions.Count < 4)
+                    if (_sliderVM.StagePositions.Count < _sliderVM.MaxStages)
                     {
                         _sliderVM.StagePositions.Add(newValue); // Add until you have 4 items
                         //SliderVM.StagePositions.Add(newValue);
@@ -332,9 +348,9 @@ namespace SliderLauncher
                         _sliderVM.StagePositions[_stageUpdateIndex] = newValue; // Overwrite existing item
                     }
 
-                    _stageUpdateIndex = (_stageUpdateIndex + 1) % 4; // Wrap index from 0 to 3
+                    _stageUpdateIndex = (_stageUpdateIndex + 1) % _sliderVM.MaxStages; // Wrap index from 0 to 3
                 }
-                if (_sliderVM.StagePositions.Count == 4)
+                if (_sliderVM.StagePositions.Count == _sliderVM.MaxStages)
                     _sliderVM.UpdateSlider();
             }
             else if (cmd == "direction")

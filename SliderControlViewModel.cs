@@ -28,6 +28,7 @@ namespace Sliders
             "fakeHpos",
             "direction",
             "position",
+            "stageparminfo",
             //"follow", //Bug sending follow command does not get it only sets.
         };
 
