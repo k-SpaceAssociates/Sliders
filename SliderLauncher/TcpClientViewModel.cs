@@ -263,10 +263,10 @@ namespace SliderLauncher
                                 {
                                     foreach (string stage in _sliderVM.StageList) //There will be no stages if connection is lost
                                     {
-                                        //if (stage.StartsWith("StageV", StringComparison.OrdinalIgnoreCase)) //Only get registers for vertical stages
-                                        //{
-                                           Send(command + " " + stage + " " + reg);
-                                        //}
+                                        if (stage.StartsWith("StageV", StringComparison.OrdinalIgnoreCase)) //Only get registers for vertical stages
+                                        {
+                                            Send(command + " " + stage + " " + reg);
+                                        }
                                     }
                                 }
                             }
