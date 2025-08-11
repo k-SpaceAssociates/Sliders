@@ -26,26 +26,26 @@
           CanUserAddRows="False"
           HeadersVisibility="Column"
           Height="80"
-          FontSize="12"
+          FontSize="9"
           Margin="5"
-          ColumnWidth="40">
+          ColumnWidth="47">
             <DataGrid.Columns>
-                <DataGridTextColumn Header="0" Binding="{Binding Values[0]}" />
-                <DataGridTextColumn Header="1" Binding="{Binding Values[1]}" />
-                <DataGridTextColumn Header="2" Binding="{Binding Values[2]}" />
-                <DataGridTextColumn Header="3" Binding="{Binding Values[3]}" />
-                <DataGridTextColumn Header="4" Binding="{Binding Values[4]}" />
-                <DataGridTextColumn Header="5" Binding="{Binding Values[5]}" />
-                <DataGridTextColumn Header="6" Binding="{Binding Values[6]}" />
-                <DataGridTextColumn Header="7" Binding="{Binding Values[7]}" />
-                <DataGridTextColumn Header="8" Binding="{Binding Values[8]}" />
-                <DataGridTextColumn Header="9" Binding="{Binding Values[9]}" />
-                <DataGridTextColumn Header="10" Binding="{Binding Values[10]}" />
-                <DataGridTextColumn Header="11" Binding="{Binding Values[11]}" />
-                <DataGridTextColumn Header="12" Binding="{Binding Values[12]}" />
-                <DataGridTextColumn Header="13" Binding="{Binding Values[13]}" />
-                <DataGridTextColumn Header="14" Binding="{Binding Values[14]}" />
-                <DataGridTextColumn Header="15" Binding="{Binding Values[15]}" />
+                <DataGridTextColumn Header="V1-1803" Binding="{Binding Values[0]}" />
+                <DataGridTextColumn Header="V2-1803" Binding="{Binding Values[1]}" />
+                <DataGridTextColumn Header="H1-1803" Binding="{Binding Values[2]}" />
+                <DataGridTextColumn Header="H2-1803" Binding="{Binding Values[3]}" />
+                <DataGridTextColumn Header="V1-1806" Binding="{Binding Values[4]}" />
+                <DataGridTextColumn Header="V2-1806" Binding="{Binding Values[5]}" />
+                <DataGridTextColumn Header="H1-1806" Binding="{Binding Values[6]}" />
+                <DataGridTextColumn Header="H2-1806" Binding="{Binding Values[7]}" />
+                <DataGridTextColumn Header="V1-1807" Binding="{Binding Values[8]}" />
+                <DataGridTextColumn Header="V2-1807" Binding="{Binding Values[9]}" />
+                <DataGridTextColumn Header="H1-1807" Binding="{Binding Values[10]}" />
+                <DataGridTextColumn Header="H2-1807" Binding="{Binding Values[11]}" />
+                <DataGridTextColumn Header="V1-1808" Binding="{Binding Values[12]}" />
+                <DataGridTextColumn Header="V2-1808" Binding="{Binding Values[13]}" />
+                <DataGridTextColumn Header="H1-1808" Binding="{Binding Values[14]}" />
+                <DataGridTextColumn Header="H2-1808" Binding="{Binding Values[15]}" />
             </DataGrid.Columns>
         </DataGrid>
         <DataGrid Grid.Row="1"
@@ -54,26 +54,26 @@
           CanUserAddRows="False"
           HeadersVisibility="Column"
           Height="60"
-          FontSize="12"
+          FontSize="9"
           Margin="5"
-          ColumnWidth="40">
+          ColumnWidth="47">
             <DataGrid.Columns>
-                <DataGridTextColumn Header="16" Binding="{Binding Values[0]}" />
-                <DataGridTextColumn Header="17" Binding="{Binding Values[1]}" />
-                <DataGridTextColumn Header="18" Binding="{Binding Values[2]}" />
-                <DataGridTextColumn Header="19" Binding="{Binding Values[3]}" />
-                <DataGridTextColumn Header="20" Binding="{Binding Values[4]}" />
-                <DataGridTextColumn Header="21" Binding="{Binding Values[5]}" />
-                <DataGridTextColumn Header="22" Binding="{Binding Values[6]}" />
-                <DataGridTextColumn Header="23" Binding="{Binding Values[7]}" />
-                <DataGridTextColumn Header="24" Binding="{Binding Values[8]}" />
-                <DataGridTextColumn Header="25" Binding="{Binding Values[9]}" />
-                <DataGridTextColumn Header="26" Binding="{Binding Values[10]}" />
-                <DataGridTextColumn Header="27" Binding="{Binding Values[11]}" />
-                <DataGridTextColumn Header="28" Binding="{Binding Values[12]}" />
-                <DataGridTextColumn Header="29" Binding="{Binding Values[13]}" />
-                <DataGridTextColumn Header="30" Binding="{Binding Values[14]}" />
-                <DataGridTextColumn Header="31" Binding="{Binding Values[15]}" />
+                <DataGridTextColumn Header="V1-1809" Binding="{Binding Values[0]}" />
+                <DataGridTextColumn Header="V2-1809" Binding="{Binding Values[1]}" />
+                <DataGridTextColumn Header="H1-1809" Binding="{Binding Values[2]}" />
+                <DataGridTextColumn Header="H2-1809" Binding="{Binding Values[3]}" />
+                <DataGridTextColumn Header="V1-1812" Binding="{Binding Values[4]}" />
+                <DataGridTextColumn Header="V2-1812" Binding="{Binding Values[5]}" />
+                <DataGridTextColumn Header="H1-1812" Binding="{Binding Values[6]}" />
+                <DataGridTextColumn Header="H2-1812" Binding="{Binding Values[7]}" />
+                <DataGridTextColumn Header="V1-1813" Binding="{Binding Values[8]}" />
+                <DataGridTextColumn Header="V2-1813" Binding="{Binding Values[9]}" />
+                <DataGridTextColumn Header="H1-1813" Binding="{Binding Values[10]}" />
+                <DataGridTextColumn Header="H2-1813" Binding="{Binding Values[11]}" />
+                <DataGridTextColumn Header="V1-1824" Binding="{Binding Values[12]}" />
+                <DataGridTextColumn Header="V2-1824" Binding="{Binding Values[13]}" />
+                <DataGridTextColumn Header="H1-1824" Binding="{Binding Values[14]}" />
+                <DataGridTextColumn Header="H2-1824" Binding="{Binding Values[15]}" />
             </DataGrid.Columns>
         </DataGrid>
         <!-- Top Canvas: Vertical Slider 1 -->

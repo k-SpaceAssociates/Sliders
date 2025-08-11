@@ -228,7 +228,7 @@ namespace SliderLauncher
             _sliderVM.RegList.Add("1809");
             _sliderVM.RegList.Add("1812");
             _sliderVM.RegList.Add("1813");
-            _sliderVM.RegList.Add("1814");
+            _sliderVM.RegList.Add("1824");
 
 
             if (_isRunning)
