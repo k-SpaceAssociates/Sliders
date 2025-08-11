@@ -263,10 +263,10 @@ namespace SliderLauncher
                                 {
                                     foreach (string stage in _sliderVM.StageList) //There will be no stages if connection is lost
                                     {
-                                        if (stage.StartsWith("StageV", StringComparison.OrdinalIgnoreCase)) //Only get registers for vertical stages
-                                        {
+                                        //if (stage.StartsWith("StageV", StringComparison.OrdinalIgnoreCase)) //Only get registers for vertical stages
+                                        //{
                                            Send(command + " " + stage + " " + reg);
-                                        }
+                                        //}
                                     }
                                 }
                             }
@@ -352,6 +352,39 @@ namespace SliderLauncher
                 }
                 if (_sliderVM.StagePositions.Count == _sliderVM.MaxStages)
                     _sliderVM.UpdateSlider();
+            }
+            else if (cmd.StartsWith("stageparminfo", StringComparison.OrdinalIgnoreCase))
+            {
+
+                var lines = response.Split(new[] { "\r\n" }, StringSplitOptions.RemoveEmptyEntries);
+                if (lines.Length > 0)
+                {
+                    var newValue = lines[0];
+
+                    if (_sliderVM.StagePositions2.Count < _sliderVM.MaxStages)
+                    {
+                        foreach (var stage in _sliderVM.StageList)
+                        {
+                            if (stage.StartsWith("StageV", StringComparison.OrdinalIgnoreCase) && _sliderVM.RegVals.Count < 32)
+                            //if (_sliderVM.RegVals.Count < 32)
+                            {
+                                _sliderVM.RegVals.Add(newValue); // Add until you have 4 stages items
+                                _sliderVM.RefreshRegValGrids();
+                            }
+                        }
+                    }
+                    else
+                    {
+                        _sliderVM.RegVals[_stageUpdateIndex2] = newValue; // Overwrite existing item
+                    }
+
+                    _stageUpdateIndex2 = (_stageUpdateIndex2 + 1) % _sliderVM.MaxStages; // Wrap index from 0 to 1
+                }
+                if (_sliderVM.StagePositions2.Count == _sliderVM.MaxStages)
+                {
+                     _sliderVM.UpdateSlider();
+                }
+
             }
             else if (cmd == "direction")
             {
