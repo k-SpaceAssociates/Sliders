@@ -25,7 +25,7 @@
           AutoGenerateColumns="False"
           CanUserAddRows="False"
           HeadersVisibility="Column"
-          Height="80"
+          Height="60"
           FontSize="9"
           Margin="5"
           ColumnWidth="47">
