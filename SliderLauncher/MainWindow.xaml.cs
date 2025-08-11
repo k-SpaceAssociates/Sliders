@@ -29,6 +29,7 @@ namespace SliderLauncher
             {
                 // Pass the UI ViewModel to TcpClientViewModel so it can push updates
                 tcpVM = new TcpClientViewModel(sliderVM);
+                DataContext = tcpVM;
             }
 
             Loaded += MainWindow_Loaded;
