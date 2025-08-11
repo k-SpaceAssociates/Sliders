@@ -256,7 +256,7 @@ namespace SliderLauncher
                            if(_sliderVM.FakeStageHoriz) Send(command + " 1"); //enable stage dummy data for horizontal position
                            else Send(command + " 0"); //disable stage dummy data for horizontal position
                         }
-                        if (command == "stageparminfo")
+                        else if (command == "stageparminfo")
                         {
                             if (_sliderVM.StageList != null)
                             {
@@ -378,7 +378,7 @@ namespace SliderLauncher
                         _sliderVM.RegVals[_stageUpdateIndex2] = newValue; // Overwrite existing item
                     }
 
-                    _stageUpdateIndex = (_stageUpdateIndex2 + 1) % _sliderVM.MaxStages; // Wrap index from 0 to 1
+                    _stageUpdateIndex2 = (_stageUpdateIndex2 + 1) % _sliderVM.MaxStages; // Wrap index from 0 to 1
                 }
                 if (_sliderVM.StagePositions2.Count == _sliderVM.MaxStages)
                     _sliderVM.UpdateSlider();
