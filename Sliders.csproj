@@ -33,6 +33,7 @@
 
 	<ItemGroup>
 	  <None Remove="Images\Nidec.png" />
+	  <None Remove="SliderControl.xaml.bak" />
 	  <None Remove="SliderControlViewModel.cs.bak" />
 	</ItemGroup>
 

@@ -136,7 +136,7 @@ namespace Sliders
 
         public SliderControlViewModel()
         {
-            if(dummy)
+            if(Dummy)
             {
                 _stepSize = 100;//Updated to make steps of 100 //HMaxValue / (DurationInSeconds / 0.05); // update every 50ms
 
