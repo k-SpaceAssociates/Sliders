@@ -10,6 +10,12 @@
 	</PropertyGroup>
 
 	<ItemGroup>
+	  <None Remove="MainWindow.xaml.bak" />
+	  <None Remove="MainWindow.xaml.cs.bak" />
+	  <None Remove="TcpClientViewModel.cs.bak" />
+	</ItemGroup>
+
+	<ItemGroup>
 	  <PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.0" />
 	</ItemGroup>
 

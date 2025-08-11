@@ -12,6 +12,7 @@ using System.Net.Sockets;
 using System.Text;
 using System.Threading.Tasks;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Threading;
 
 
@@ -27,6 +28,7 @@ namespace SliderLauncher
 
         private bool _isRunning = false;
         private int _stageUpdateIndex = 0;
+        private int _stageUpdateIndex2 = 0;
         private bool connected = false;
         private TcpClient? _client;
         private NetworkStream? _stream;
@@ -39,16 +41,19 @@ namespace SliderLauncher
         private int port = 49215;
 
         [ObservableProperty]
-        private string output = "";
+        private int streamport = 8000;
 
         [ObservableProperty]
-    private bool useStreaming = true; // ✅ Switch between streaming and polling
+        private string output = "";
 
         [ObservableProperty]
         private string inputMessage = "";
 
         [ObservableProperty]
         private bool autoLaunch = false;
+
+        [ObservableProperty]
+        private bool useStreaming = false; // ✅ Switch between streaming and polling
 
         // ✅ Constructor now takes SliderControlViewModel from MainWindow
         public TcpClientViewModel(SliderControlViewModel sliderVM)
@@ -63,6 +68,8 @@ namespace SliderLauncher
                 ConnectCommand.Execute(null);
             }
         }
+
+        private CancellationTokenSource? _cts;
 
         [RelayCommand]
         public async Task ConnectAsync()
@@ -95,44 +102,60 @@ namespace SliderLauncher
             _timer.Start();
         }
 
+        //////////////////////////////////////////////////////////////////////////////////
+        // Streaming support section
+        //////////////////////////////////////////////////////////////////////////////////
         /// <summary>
         /// Stream reading loop to handle incoming messages asynchronously.
         /// </summary>
         /// <returns></returns>
-        //private async Task ReadLoopAsync()
-        //{
-        //    var buffer = new byte[1024];
-        //    try
-        //    {
-        //        while (_client?.Connected == true)
-        //        {
-        //            int bytesRead = await _stream.ReadAsync(buffer, 0, buffer.Length);
-        //            if (bytesRead == 0) break; // connection closed
+        private async Task ReadLoopAsync(CancellationToken token)
+        {
+            var buffer = new byte[1024];
+            try
+            {
+                while (_client?.Connected == true && !token.IsCancellationRequested)
+                {
+                    int bytesRead = await _stream.ReadAsync(buffer, 0, buffer.Length);
+                    if (bytesRead == 0) break; // connection closed
 
-        //            var message = Encoding.UTF8.GetString(buffer, 0, bytesRead);
-        //            ProcessIncomingMessage(message);
-        //        }
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        Output += $"Stream read error: {ex.Message}\n";
-        //    }
-        //}
+                    var message = Encoding.UTF8.GetString(buffer, 0, bytesRead);
+                    ProcessIncomingMessage(message);
+                    Debug.WriteLine(message + "\n");
+                }
+            }
+            catch (OperationCanceledException)
+            {
+                Output += "Stream reading canceled.\n";
+            }
+            catch (Exception ex)
+            {
+                Output += $"Stream read error: {ex.Message}\n";
+            }
+        }
 
-        //private void ProcessIncomingMessage(string message)
-        //{
-        //    // Parse and update UI-bound VM
-        //    Application.Current.Dispatcher.Invoke(() =>
-        //    {
-        //        _sliderVM.CurrentValue = ParseSliderValue(message);
-        //    });
-        //}
+        public void Disconnect()
+        {
+            _cts?.Cancel();
+            _client?.Close();
+            _timer.Stop();
+        }
+        private void ProcessIncomingMessage(string message)
+        {
+            // Parse and update UI-bound VM
+            Application.Current.Dispatcher.Invoke(() =>
+            {
+                _sliderVM.CurrentValue = ParseSliderValue(message);
+            });
+        }
 
-        //private double ParseSliderValue(string message)
-        //{
-        //    // TODO: parse incoming protocol to extract value
-        //    return double.TryParse(message, out var value) ? value : 0;
-        //}
+        private double ParseSliderValue(string message)
+        {
+            // TODO: parse incoming protocol to extract value
+            return double.TryParse(message, out var value) ? value : 0;
+        }
+
+        //////////End Streaming support section///////////////////////////////////////////
 
         [RelayCommand]
         private async Task SendAsync()
@@ -253,6 +276,7 @@ namespace SliderLauncher
 
         void AssignResults(string cmd, string response)
         {
+            if (response == "") { Output=$"Error: No response received\n"; Debug.WriteLine(Output); }
             if (cmd == "list") //Assume list gets Stages available
             {
                 var stages = ConvertToList(response);
@@ -400,7 +424,8 @@ namespace SliderLauncher
             }
 
             // Forward to child view model for graceful shutdown
-            return _sliderVM?.OnClosing() ?? true;
+            //return _sliderVM?.OnClosing() ?? true;
+            return true;
         }
     }
 

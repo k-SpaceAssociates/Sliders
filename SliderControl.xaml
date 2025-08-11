@@ -6,9 +6,11 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              mc:Ignorable="d"
-             Height="250" Width="800">
+             Height="500" Width="800">
     <Grid Background="White">
         <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
             <RowDefinition Height="95"/>
             <!-- Top canvas (vertical indicator for top slider) -->
             <RowDefinition Height="Auto"/>
@@ -18,8 +20,64 @@
             <RowDefinition Height="*"/>
             <!-- Bottom canvas (vertical indicator for bottom slider) -->
         </Grid.RowDefinitions>
+        <DataGrid Grid.Row="0"
+          ItemsSource="{Binding RegValRows1}"
+          AutoGenerateColumns="False"
+          CanUserAddRows="False"
+          HeadersVisibility="Column"
+          Height="80"
+          FontSize="9"
+          Margin="5"
+          ColumnWidth="47">
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="V1-1803" Binding="{Binding Values[0]}" />
+                <DataGridTextColumn Header="V2-1803" Binding="{Binding Values[1]}" />
+                <DataGridTextColumn Header="H1-1803" Binding="{Binding Values[2]}" />
+                <DataGridTextColumn Header="H2-1803" Binding="{Binding Values[3]}" />
+                <DataGridTextColumn Header="V1-1806" Binding="{Binding Values[4]}" />
+                <DataGridTextColumn Header="V2-1806" Binding="{Binding Values[5]}" />
+                <DataGridTextColumn Header="H1-1806" Binding="{Binding Values[6]}" />
+                <DataGridTextColumn Header="H2-1806" Binding="{Binding Values[7]}" />
+                <DataGridTextColumn Header="V1-1807" Binding="{Binding Values[8]}" />
+                <DataGridTextColumn Header="V2-1807" Binding="{Binding Values[9]}" />
+                <DataGridTextColumn Header="H1-1807" Binding="{Binding Values[10]}" />
+                <DataGridTextColumn Header="H2-1807" Binding="{Binding Values[11]}" />
+                <DataGridTextColumn Header="V1-1808" Binding="{Binding Values[12]}" />
+                <DataGridTextColumn Header="V2-1808" Binding="{Binding Values[13]}" />
+                <DataGridTextColumn Header="H1-1808" Binding="{Binding Values[14]}" />
+                <DataGridTextColumn Header="H2-1808" Binding="{Binding Values[15]}" />
+            </DataGrid.Columns>
+        </DataGrid>
+        <DataGrid Grid.Row="1"
+          ItemsSource="{Binding RegValRows2}"
+          AutoGenerateColumns="False"
+          CanUserAddRows="False"
+          HeadersVisibility="Column"
+          Height="60"
+          FontSize="9"
+          Margin="5"
+          ColumnWidth="47">
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="V1-1809" Binding="{Binding Values[0]}" />
+                <DataGridTextColumn Header="V2-1809" Binding="{Binding Values[1]}" />
+                <DataGridTextColumn Header="H1-1809" Binding="{Binding Values[2]}" />
+                <DataGridTextColumn Header="H2-1809" Binding="{Binding Values[3]}" />
+                <DataGridTextColumn Header="V1-1812" Binding="{Binding Values[4]}" />
+                <DataGridTextColumn Header="V2-1812" Binding="{Binding Values[5]}" />
+                <DataGridTextColumn Header="H1-1812" Binding="{Binding Values[6]}" />
+                <DataGridTextColumn Header="H2-1812" Binding="{Binding Values[7]}" />
+                <DataGridTextColumn Header="V1-1813" Binding="{Binding Values[8]}" />
+                <DataGridTextColumn Header="V2-1813" Binding="{Binding Values[9]}" />
+                <DataGridTextColumn Header="H1-1813" Binding="{Binding Values[10]}" />
+                <DataGridTextColumn Header="H2-1813" Binding="{Binding Values[11]}" />
+                <DataGridTextColumn Header="V1-1824" Binding="{Binding Values[12]}" />
+                <DataGridTextColumn Header="V2-1824" Binding="{Binding Values[13]}" />
+                <DataGridTextColumn Header="H1-1824" Binding="{Binding Values[14]}" />
+                <DataGridTextColumn Header="H2-1824" Binding="{Binding Values[15]}" />
+            </DataGrid.Columns>
+        </DataGrid>
         <!-- Top Canvas: Vertical Slider 1 -->
-        <Canvas Grid.Row="0" Background="Transparent" Height="100">
+        <Canvas Grid.Row="2" Background="Transparent" Height="100">
             <Line X1="0" X2="800" Stroke="Gray" StrokeThickness="20"
           Canvas.Top="{Binding VerticalSliderMidpointTop}" />
             <Slider Orientation="Vertical"
@@ -63,41 +121,40 @@
             </Slider>
             <TextBlock Text="{Binding VerticalStageValue1}" 
                FontSize="14" 
-               Foreground="Blue"
+               Foreground="DarkGoldenrod"
                Canvas.Left="{Binding VerticalSliderLeft1}" 
                Canvas.Top="{Binding VerticalSliderTop1}" />
         </Canvas>
 
         <!-- Top Horizontal Slider -->
-        <Slider Grid.Row="1"
+        <Slider Grid.Row="3"
         Minimum="{Binding SliderMinimum}"
         Maximum="{Binding SliderMaximum}"
         Value="{Binding DataContext.SliderValue, ElementName=Root, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, PresentationTraceSources.TraceLevel=High}"
         Height="0"
         Margin="20,10"
-        Foreground="Blue"/>
-        <StackPanel VerticalAlignment="Top" HorizontalAlignment="Left" Margin="10">
+        Foreground="Cyan"/>
+        <StackPanel Grid.Row="3" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="10">
             <TextBlock 
-    Text="{Binding DataContext.SliderValue, ElementName=Root, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, PresentationTraceSources.TraceLevel=High}"
-          Foreground="Green" FontSize="16" HorizontalAlignment="Right" Margin="0,32,40,0"/> 
+         Text="{Binding DataContext.SliderValue, ElementName=Root, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, PresentationTraceSources.TraceLevel=High}"
+          Foreground="Green" FontSize="16"  VerticalAlignment="Bottom" HorizontalAlignment="Right" Margin="0,32,40,0"/> 
 
             <TextBlock Text="{Binding SliderMinimum}" Foreground="Blue" FontSize="16"/>
+
         </StackPanel>
 
-        <TextBlock Text="{Binding DataContext.SliderValue, ElementName=Root, Mode=TwoWay}" 
-          Foreground="Green" FontSize="16" HorizontalAlignment="Right" Margin="0,32,40,0"/>
 
         <!-- Bottom Horizontal Slider -->
-        <Slider Grid.Row="2"
+        <Slider Grid.Row="4"
         Minimum="{Binding SliderMinimum}"
         Maximum="{Binding SliderMaximum}"
         Value="{Binding FollowerSliderValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
         Height="0"
         Margin="20,10"
-        Foreground="Green"/>
+        Foreground="red"/>
 
         <!-- Bottom Canvas: Vertical Slider 2 -->
-        <Canvas Grid.Row="3" Background="Transparent" Height="100">
+        <Canvas Grid.Row="5" Background="Transparent" Height="100">
             <Line X1="0" X2="800" Stroke="Gray" StrokeThickness="20"
           Canvas.Top="{Binding VerticalSliderMidpointTop}" />
             <Slider Orientation="Vertical"
@@ -107,7 +164,7 @@
             Width="40"
             Canvas.Top="{Binding VerticalSliderTop2, Mode=TwoWay}"
             Canvas.Left="{Binding VerticalSliderLeft2, Mode=TwoWay}"
-            Foreground="Green">
+            Foreground="Violet">
                 <Slider.Template>
                     <ControlTemplate TargetType="Slider">
                         <Grid>
@@ -135,7 +192,7 @@
             </Slider>
             <TextBlock Text="{Binding VerticalStageValue2}" 
                FontSize="14" 
-               Foreground="Green"
+               Foreground="DarkViolet"
                Canvas.Left="{Binding VerticalSliderLeft2}" 
                Canvas.Top="{Binding VerticalSliderTop2}" />
         </Canvas>

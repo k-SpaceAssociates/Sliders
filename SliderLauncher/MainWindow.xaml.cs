@@ -46,6 +46,13 @@ namespace SliderLauncher
 
         private void MainWindow_Closing(object? sender, CancelEventArgs e)
         {
+            bool? status = sliderVM?.OnClosing();
+            if (status != null && status == false)
+            {
+                e.Cancel = true;
+                return;
+            }
+                
             if (tcpVM != null)
             {
                 bool allowClose = tcpVM.OnClosing();
