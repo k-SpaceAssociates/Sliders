@@ -57,16 +57,16 @@
 
             <TextBox Text="{Binding Output}" Grid.Row="2" Grid.Column="1" Margin="60,0,0,5" AcceptsReturn="True" TextWrapping="Wrap"/>
             <!-- Connect Button -->
-            <Button Content="Connect"
+            <!--<Button Content="Connect"
                     Command="{Binding ConnectCommand}" 
                     Grid.Row="3"
                     Grid.Column="1"
                     HorizontalAlignment="Left"
-                    Margin="0,0,0,0"/>
-            <CheckBox Grid.Row="3" Grid.Column="2" 
+                    Margin="0,0,0,0"/>-->
+            <!--<CheckBox Grid.Row="3" Grid.Column="2" 
           Content="Auto Launch" 
           IsChecked="{Binding AutoLaunch, Mode=TwoWay}" 
-          Margin="0,5,0,0"/>
+          Margin="0,5,0,0"/>-->
         </Grid>
 
         <!-- SliderControl -->

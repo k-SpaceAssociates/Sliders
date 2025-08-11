@@ -29,12 +29,11 @@ namespace SliderLauncher
             {
                 // Pass the UI ViewModel to TcpClientViewModel so it can push updates
                 tcpVM = new TcpClientViewModel(sliderVM);
+                DataContext = tcpVM;
             }
 
             Loaded += MainWindow_Loaded;
-
             Closing += MainWindow_Closing;
-
         }
 
         private void MainWindow_Loaded(object sender, RoutedEventArgs e)
@@ -64,7 +63,6 @@ namespace SliderLauncher
                 }
                 tcpVM.SaveAllSettings();
             }
-
         }
     }
 }

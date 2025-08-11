@@ -16,7 +16,6 @@ using System.Windows;
 using System.Windows.Threading;
 
 
-
 namespace SliderLauncher
 {
     public partial class TcpClientViewModel : ObservableObject
@@ -264,10 +263,10 @@ namespace SliderLauncher
                                 {
                                     foreach (string stage in _sliderVM.StageList) //There will be no stages if connection is lost
                                     {
-                                        if (stage.StartsWith("StageV", StringComparison.OrdinalIgnoreCase)) //Only get registers for vertical stages
-                                        {
+                                        //if (stage.StartsWith("StageV", StringComparison.OrdinalIgnoreCase)) //Only get registers for vertical stages
+                                        //{
                                            Send(command + " " + stage + " " + reg);
-                                        }
+                                        //}
                                     }
                                 }
                             }
@@ -368,7 +367,7 @@ namespace SliderLauncher
                         {
                             if (stage.StartsWith("StageV", StringComparison.OrdinalIgnoreCase) && _sliderVM.RegVals.Count < 32)
                             {
-                                _sliderVM.RegVals.Add(newValue); // Add until you have 2 stages items
+                                _sliderVM.RegVals.Add(newValue); // Add until you have 4 stages items
                                 _sliderVM.RefreshRegValGrids();
                             }
                         }
@@ -381,7 +380,10 @@ namespace SliderLauncher
                     _stageUpdateIndex2 = (_stageUpdateIndex2 + 1) % _sliderVM.MaxStages; // Wrap index from 0 to 1
                 }
                 if (_sliderVM.StagePositions2.Count == _sliderVM.MaxStages)
-                    _sliderVM.UpdateSlider();
+                {
+                     _sliderVM.UpdateSlider();
+                }
+
             }
             else if (cmd == "direction")
             {
