@@ -361,7 +361,7 @@ namespace SliderLauncher
                 {
                     var newValue = lines[0];
 
-                    if (_sliderVM.StagePositions2.Count < _sliderVM.MaxStages)
+                    if (_sliderVM.StagePositions2.Count < _sliderVM.MaxStages && _sliderVM.RegVals.Count < 32)
                     {
                         foreach (var stage in _sliderVM.StageList)
                         {
