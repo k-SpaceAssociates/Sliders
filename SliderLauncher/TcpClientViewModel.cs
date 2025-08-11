@@ -74,32 +74,49 @@ namespace SliderLauncher
         [RelayCommand]
         public async Task ConnectAsync()
         {
-            Connect();
-
-            ////For streaming support instead of command client
-            //try
-            //{
-            //    _client = new TcpClient();
-            //    await _client.ConnectAsync(IpAddress, Port);
-            //    _stream = _client.GetStream();
-
-            //    Output += $"Connected to {IpAddress}:{Port}\n";
-            //    Debug.WriteLine(Output);
-
-            //    _ = Task.Run(() => ReadLoopAsync()); // fire and forget
-            //}
-            //catch (Exception ex)
-            //{
-            //    Output += $"Connection failed: {ex.Message}\n";
-            //}
-
-            _timer.Interval = TimeSpan.FromMilliseconds(200);
-            _timer.Tick += (s, e) =>
+            if (UseStreaming)
             {
-                RunCommands();
-                _sliderVM.UpdateSlider(); // push updates to UI-bound VM
-            };
-            _timer.Start();
+                _cts = new CancellationTokenSource();
+
+                try
+                {
+                    _client = new TcpClient();
+                    await _client.ConnectAsync(IpAddress, Streamport);
+
+                    if (_client.Connected)
+                    {
+                        _stream = _client.GetStream();
+                        Output += $"Connected to {IpAddress}:{Streamport}\n";
+                        Debug.WriteLine(Output);
+
+                        _ = Task.Run(() => ReadLoopAsync(_cts.Token)); // fire and forget
+                    }
+                    else
+                    {
+                        Output += $"Connection attempt failed: Unable to connect to {IpAddress}:{Streamport}\n";
+                        Debug.WriteLine(Output);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Output += $"Connection failed: {ex.Message}\n";
+                    Debug.WriteLine($"Connection failed: {ex}");
+                    // Show message box or raise an event to inform UI
+                    // MessageBox.Show($"Failed to connect to {IpAddress}:{Streamport}\n{ex.Message}", "Connection Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                }
+            }
+            else
+            {
+                Connect();
+
+                _timer.Interval = TimeSpan.FromMilliseconds(200);
+                _timer.Tick += (s, e) =>
+                {
+                    RunCommands();
+                    _sliderVM.UpdateSlider(); // push updates to UI-bound VM
+                };
+                _timer.Start();
+            }
         }
 
         //////////////////////////////////////////////////////////////////////////////////
