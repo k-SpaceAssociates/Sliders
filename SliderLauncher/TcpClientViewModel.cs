@@ -355,22 +355,16 @@ namespace SliderLauncher
             }
             else if (cmd.StartsWith("stageparminfo", StringComparison.OrdinalIgnoreCase))
             {
-
+                //string curStage = cmd.Split(' ')[1]; //Get stage part of cmd
                 var lines = response.Split(new[] { "\r\n" }, StringSplitOptions.RemoveEmptyEntries);
                 if (lines.Length > 0)
                 {
                     var newValue = lines[0];
 
-                    if (_sliderVM.StagePositions2.Count < _sliderVM.MaxStages && _sliderVM.RegVals.Count < 32)
+                    if (_sliderVM.StagePositions2.Count < _sliderVM.MaxStages && _sliderVM.RegVals.Count < 16)
                     {
-                        foreach (var stage in _sliderVM.StageList)
-                        {
-                            if (stage.StartsWith("StageV", StringComparison.OrdinalIgnoreCase) && _sliderVM.RegVals.Count < 32)
-                            {
                                 _sliderVM.RegVals.Add(newValue); // Add until you have 4 stages items
                                 _sliderVM.RefreshRegValGrids();
-                            }
-                        }
                     }
                     else
                     {
