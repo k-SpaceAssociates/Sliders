@@ -219,6 +219,17 @@ namespace SliderLauncher
 
         public void RunCommands()
         {
+            _sliderVM.RegList.Clear();
+            _sliderVM.RegList.Add("1803"); //Add registers to read for vertical stages
+            _sliderVM.RegList.Add("1806");
+            _sliderVM.RegList.Add("1807");
+            _sliderVM.RegList.Add("1808");
+            _sliderVM.RegList.Add("1809");
+            _sliderVM.RegList.Add("1812");
+            _sliderVM.RegList.Add("1813");
+            _sliderVM.RegList.Add("1824");
+
+
             if (_isRunning)
                 return;
             _isRunning = true;
@@ -332,7 +343,6 @@ namespace SliderLauncher
                 if (lines.Length > 0)
                     _sliderVM.Direction = lines[0];
             }
-
             else if (cmd == "follow")
             {
                 if (response.IndexOf("off", StringComparison.OrdinalIgnoreCase) >= 0)
