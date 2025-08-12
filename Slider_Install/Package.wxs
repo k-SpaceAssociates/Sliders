@@ -1,0 +1,15 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<Wix xmlns="http://wixtoolset.org/schemas/v4/wxs">
+	<Package Id="KSA.Slider_Install"
+			 Name="Slider_Install"
+			 Manufacturer="k-Space Associates"
+			 Version="1.0.0.0">
+
+		<MajorUpgrade DowngradeErrorMessage="!(loc.DowngradeError)" />
+
+		<Feature Id="Main" Title="SliderLauncher" Level="1">
+			<ComponentGroupRef Id="AppFiles" />
+		</Feature>
+
+	</Package>
+</Wix>

@@ -1,0 +1,55 @@
+<Wix xmlns="http://wixtoolset.org/schemas/v4/wxs">
+	
+	<Fragment>
+		<DirectoryRef Id="ProgramFiles64Folder" />
+		<ComponentGroup Id="AppFiles">
+			<Component Id="RemoveInstallFolderContents" Guid="{3D0E9EE5-1B87-4A76-92AC-2AA7858E8D0F}">
+				<!-- Remove all files in INSTALLFOLDER -->
+				<RemoveFile Id="RemoveAllFiles" Directory="INSTALLFOLDER" Name="*.*" On="install" />
+			</Component>
+			<Component Id="SliderLauncher.dll" Guid="*">
+				<File Source="$(var.AppOutputPath)SliderLauncher.dll" />
+			</Component>
+			<Component Id="CommunityToolkit.Mvvm.dll" Guid="*">
+				<File Source="$(var.AppOutputPath)CommunityToolkit.Mvvm.dll" />
+			</Component>
+			<Component Id="kSAAutomationUtils.dll" Guid="*">
+				<File Source="$(var.AppOutputPath)kSAAutomationUtils.dll" />
+			</Component>
+			<Component Id="kSACommSDK.dll" Guid="*">
+				<File Source="$(var.AppOutputPath)kSACommSDK.dll" />
+			</Component>
+			<Component Id="kSATxtCmdNETSDK.dll" Guid="*">
+				<File Source="$(var.AppOutputPath)kSATxtCmdNETSDK.dll" />
+			</Component>
+			<Component Id="log4net.dll" Guid="*">
+				<File Source="$(var.AppOutputPath)log4net.dll" />
+			</Component>
+			<Component Id="PortableSettingsProvider.dll" Guid="*">
+				<File Source="$(var.AppOutputPath)PortableSettingsProvider.dll" />
+			</Component>
+			<Component Id="SliderLauncher.deps.json" Guid="*">
+				<File Source="$(var.AppOutputPath)SliderLauncher.deps.json" />
+			</Component>
+			<Component Id="SliderLauncher.dll.config" Guid="*">
+				<File Source="$(var.AppOutputPath)SliderLauncher.dll.config" />
+			</Component>
+			<Component Id="SliderLauncher.exe" Guid="*">
+				<File Source="$(var.AppOutputPath)SliderLauncher.exe" />
+			</Component>
+			<Component Id="SliderLauncher.pdb" Guid="*">
+				<File Source="$(var.AppOutputPath)SliderLauncher.pdb" />
+			</Component>
+			<Component Id="SliderLauncher.runtimeconfig.json" Guid="*">
+				<File Source="$(var.AppOutputPath)SliderLauncher.runtimeconfig.json" />
+			</Component>
+			<Component Id="Sliders.dll" Guid="*">
+				<File Source="$(var.AppOutputPath)Sliders.dll" />
+			</Component>
+			<Component Id="Sliders.pdb" Guid="*">
+				<File Source="$(var.AppOutputPath)Sliders.pdb" />
+			</Component>
+			<!-- More components here -->
+		</ComponentGroup>
+	</Fragment>
+</Wix>
