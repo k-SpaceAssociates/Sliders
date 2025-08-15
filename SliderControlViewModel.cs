@@ -91,7 +91,7 @@ namespace Sliders
         }
 
         [ObservableProperty]
-        private bool fakeStageHoriz = true; //fakeStageHoriz when true will tell the stage controller to fake the horizontal stage positions
+        private bool fakeStageHoriz = false; //fakeStageHoriz when true will tell the stage controller to fake the horizontal stage positions
 
         [ObservableProperty]
         private double sliderMinimum = 0;
