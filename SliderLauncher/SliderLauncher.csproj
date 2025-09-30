@@ -16,6 +16,10 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <PackageReference Include="kSATxtCmdNETSDK" Version="1.0.7" />
+	</ItemGroup>
+
+	<ItemGroup>
 	  <ProjectReference Include="..\Sliders.csproj" />
 	</ItemGroup>
 

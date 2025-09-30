@@ -31,42 +31,46 @@
                 <!-- Add this -->
             </Grid.ColumnDefinitions>
 
-            <!-- IP Address -->
-            <TextBlock Text="IP Address:" Grid.Row="0" Grid.Column="0" Margin="0,0,10,5" VerticalAlignment="Center"/>
-            <TextBox x:Name="IPAddressTextBox" Grid.Row="0" Grid.Column="1" Margin="0,0,0,5">
-                <TextBox.Text>
-                    <Binding Path="IpAddress" Mode="TwoWay" UpdateSourceTrigger="LostFocus">
-                        <Binding.ValidationRules>
-                            <local:IpAddressOrHostValidationRule />
-                        </Binding.ValidationRules>
-                    </Binding>
-                </TextBox.Text>
-            </TextBox>
+            <!-- Connection Settings -->
+            <StackPanel Grid.Row="0" Margin="0,0,0,10" Orientation="Horizontal">
+                <TextBlock Text="IP Address:" Grid.Row="0" Grid.Column="0" Margin="0,0,10,5" VerticalAlignment="Center" ToolTip="Text command connection needs an ethernet IPAddress and port."/>
+                <TextBox x:Name="IPAddressTextBox" Grid.Row="0" Grid.Column="1" Margin="0,0,0,5" ToolTip="Enter the IPAddress here before attempting to connect.">
+                    <TextBox.Text>
+                        <Binding Path="IpAddress" Mode="TwoWay" UpdateSourceTrigger="LostFocus">
+                            <Binding.ValidationRules>
+                                <local:IpAddressOrHostValidationRule />
+                            </Binding.ValidationRules>
+                        </Binding>
+                    </TextBox.Text>
+                </TextBox>
 
-            <!-- Port -->
-            <TextBlock Text="Port:" Grid.Row="1" Grid.Column="0" Margin="0,0,10,5" VerticalAlignment="Center"/>
-            <TextBox x:Name="PortTextBox" Grid.Row="1" Grid.Column="1" Margin="0,0,0,5">
-                <TextBox.Text>
-                    <Binding Path="Port" Mode="TwoWay" UpdateSourceTrigger="PropertyChanged">
-                        <Binding.ValidationRules>
-                            <local:PortValidationRule />
-                        </Binding.ValidationRules>
-                    </Binding>
-                </TextBox.Text>
-            </TextBox>
+                <!-- Port -->
+                <TextBlock Text="Port:" Grid.Row="1" Grid.Column="0" Margin="10,0,10,5" VerticalAlignment="Center" ToolTip="Text command connection needs an ethernet IPAddress and port."/>
+                <TextBox x:Name="PortTextBox" Grid.Row="1" Grid.Column="1" Margin="0,0,0,5" ToolTip="Enter the port here before attempting to connect.">
+                    <TextBox.Text>
+                        <Binding Path="Port" Mode="TwoWay" UpdateSourceTrigger="PropertyChanged">
+                            <Binding.ValidationRules>
+                                <local:PortValidationRule />
+                            </Binding.ValidationRules>
+                        </Binding>
+                    </TextBox.Text>
+                </TextBox>
+                <!-- Connect Button -->
+                <Button Content="Connect" ToolTip="After entering to correct IPAdress and Port, press this to connect before sending commands."
+                 Command="{Binding ConnectCommand}" 
+                 Grid.Row="3"
+                 Grid.Column="1"
+                 HorizontalAlignment="Left"
+                 Margin="10,0,0,5"/>
 
-            <TextBox Text="{Binding Output}" Grid.Row="2" Grid.Column="1" Margin="60,0,0,5" AcceptsReturn="True" TextWrapping="Wrap"/>
-            <!-- Connect Button -->
-            <!--<Button Content="Connect"
-                    Command="{Binding ConnectCommand}" 
-                    Grid.Row="3"
-                    Grid.Column="1"
-                    HorizontalAlignment="Left"
-                    Margin="0,0,0,0"/>-->
-            <!--<CheckBox Grid.Row="3" Grid.Column="2" 
-          Content="Auto Launch" 
+            </StackPanel>
+
+            <TextBox Text="{Binding Output}" Grid.Row="2" Grid.Column="0" Margin="60,0,0,5" AcceptsReturn="True" TextWrapping="Wrap"/>
+
+            <CheckBox Grid.Row="3" Grid.Column="2" 
+          Content="Launch" 
           IsChecked="{Binding AutoLaunch, Mode=TwoWay}" 
-          Margin="0,5,0,0"/>-->
+          Margin="0,5,0,0"/>
         </Grid>
 
         <!-- SliderControl -->

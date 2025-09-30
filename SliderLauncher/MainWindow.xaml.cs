@@ -38,7 +38,7 @@ namespace SliderLauncher
 
         private void MainWindow_Loaded(object sender, RoutedEventArgs e)
         {
-            if (tcpVM != null)
+            if (tcpVM != null && tcpVM.AutoLaunch == true)
             {
                 _ = tcpVM.ConnectAsync(); // fire-and-forget
             }

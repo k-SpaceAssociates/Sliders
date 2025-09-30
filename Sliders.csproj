@@ -39,7 +39,7 @@
 
 	<ItemGroup>
 	  <PackageReference Include="kSAAutomationUtils" Version="1.0.1" />
-	  <PackageReference Include="kSATxtCmdNETSDK" Version="1.0.6" />
+	  <PackageReference Include="kSATxtCmdNETSDK" Version="1.0.7" />
 	  <PackageReference Include="log4net" Version="3.1.0" />
 	</ItemGroup>
 
