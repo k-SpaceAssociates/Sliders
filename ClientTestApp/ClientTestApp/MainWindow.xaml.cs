@@ -1,4 +1,5 @@
 ﻿using kSATxtCmdNETSDk;
+using log4net;
 using System.ComponentModel;
 using System.Windows;
 
@@ -10,11 +11,13 @@ namespace ClientTestApp
     public partial class MainWindow : Window
     {
         private kSATxtCmdClient cmdClient = new();
-
+        //private static readonly ILog log = LogManager.GetLogger(typeof(MainWindow));
+        private static readonly log4net.ILog log = log4net.LogManager.GetLogger(typeof(MainWindow));
         private readonly TcpClientViewModel vm;
         public MainWindow()
         {
             InitializeComponent();
+            log.Debug("MainWindow initialized.");
             // DataContext = this;
             // DataContext = new TcpClientViewModel();
             vm = new TcpClientViewModel();
@@ -44,11 +47,13 @@ namespace ClientTestApp
         private void MainWindow_Loaded(object sender, RoutedEventArgs e)
         {
             vm.LoadAllSettings();
+            log.Debug("vm.LoadAllSettings completed.");
         }
         protected override void OnClosed(EventArgs e)
         {
 
             //client.Close();
+            log.Debug("Starting OnClosed.");
             base.OnClosed(e);
         }
 

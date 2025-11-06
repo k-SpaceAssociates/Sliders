@@ -11,11 +11,16 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Threading.Tasks;
 using System.Windows.Threading;
+using log4net;
+using log4net.Config;
+using System.IO;
+
 
 namespace ClientTestApp
 {
     public partial class TcpClientViewModel : ObservableObject
     {
+        private static readonly ILog log = LogManager.GetLogger(typeof(TcpClientViewModel));
         private readonly kSATxtCmdClient cmdClient = new();
         CommandClientHandler client = new CommandClientHandler();
         private bool _isRunning = false;
@@ -169,6 +174,7 @@ namespace ClientTestApp
 
         public void LoadAllSettings()
         {
+            log.Debug("Starting LoadAllSettings.");
             var settings = Properties.Settings.Default;
             var viewModelProps = this.GetType().GetProperties();
             var settingsProps = settings.GetType().GetProperties();
