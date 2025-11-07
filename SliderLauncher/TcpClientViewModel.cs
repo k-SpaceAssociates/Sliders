@@ -101,7 +101,7 @@ namespace SliderLauncher
                 catch (Exception ex)
                 {
                     Output += $"Connection failed: {ex.Message}\n";
-                    Debug.WriteLine($"Connection failed: {ex}");
+                    log.Debug($"Connection failed: {ex.Message}");
                     // Show message box or raise an event to inform UI
                     // MessageBox.Show($"Failed to connect to {IpAddress}:{Streamport}\n{ex.Message}", "Connection Error", MessageBoxButton.OK, MessageBoxImage.Error);
                 }
@@ -109,6 +109,8 @@ namespace SliderLauncher
             else
             {
                 Connect();
+                if(!connected) //Don't start timer if not connected
+                    return;
 
                 _timer.Interval = TimeSpan.FromMilliseconds(200);
                 _timer.Tick += (s, e) =>
@@ -307,21 +309,25 @@ namespace SliderLauncher
             // bool connected = client.Connect("localhost", 49215, out var response, out var ret);
             //bool connected = client.Connect("192.168.3.10", 49215, out var response, out var ret);
             connected = client.Connect(IpAddress, Port, out var response, out var ret);
-            Debug.WriteLine(connected ? $"Connected.\nResponse: {response}\nRet: {ret}" : response);
-            Output += $"Connected to {IpAddress}:{Port}\n";
-            Debug.WriteLine(Output);
+            log.Debug(connected ? $"Connected.\nResponse: {response}\nRet: {ret}" : response);
+            Output += $"IPAddress:Port= {IpAddress}:{Port}, Connected={connected}\n";
+            log.Debug(Output);
         }
 
         private void Send(string command)
         {
             bool sent = client.Send(command, out var response, out var ret);
-            if (verboseOutput) Debug.WriteLine($"Ret: {ret}\nCommand: {command}\nResponse:{response}\n");
+            if (verboseOutput) log.Debug($"Ret: {ret}\nCommand: {command}\nResponse:{response}\n");
             AssignResults(command, response);
         }
 
         void AssignResults(string cmd, string response)
         {
-            if (response == "") { Output=$"Error: No response received\n"; Debug.WriteLine(Output); }
+            if (response == "") 
+            { 
+                Output=$"Error: No response received\n"; 
+                if(connected) log.Debug(Output); 
+            }
             if (cmd == "list") //Assume list gets Stages available
             {
                 var stages = ConvertToList(response);
@@ -473,7 +479,7 @@ namespace SliderLauncher
             }
             catch (Exception ex)
             {
-                Debug.WriteLine($"Error while disconnecting client: {ex.Message}");
+                log.Debug($"Error while disconnecting client: {ex.Message}");
             }
             
 
@@ -490,7 +496,7 @@ namespace SliderLauncher
             }
             catch (Exception ex)
             {
-                Debug.WriteLine($"Error during TCP shutdown: {ex.Message}");
+                log.Debug($"Error during TCP shutdown: {ex.Message}");
             }
 
             // Forward to child view model for graceful shutdown

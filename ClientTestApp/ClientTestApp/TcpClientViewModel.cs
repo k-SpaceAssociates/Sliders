@@ -57,6 +57,7 @@ namespace ClientTestApp
         [RelayCommand]
         private async Task ConnectAsync()
         {
+            log.Debug("Starting ConnectAsync.");
             Connect();
 
             //For streaming support instead of command client
@@ -135,8 +136,8 @@ namespace ClientTestApp
 
         private void Send()
         {
-           client.Send(Input, out var response, out var ret);
-            Debug.WriteLine($"Ret: {ret}\nCommand: {Input}\nResponse:{response}\n");
+            client.Send(Input, out var response, out var ret);
+            log.Debug($"Ret: {ret}\nCommand: {Input}\nResponse:{response}\n");
             Output += $"Sent: {Input}\nResponse: {response}\n";
         }
         private void Connect()
@@ -161,9 +162,9 @@ namespace ClientTestApp
             // bool connected = client.Connect("localhost", 49215, out var response, out var ret);
             //bool connected = client.Connect("192.168.3.10", 49215, out var response, out var ret);
             connected = client.Connect(IPAddress, Port, out var response, out var ret);
-            Debug.WriteLine(connected ? $"Connected.\nResponse: {response}\nRet: {ret}" : response);
-            Output += $"Connected to {IPAddress}:{Port}\n";
-            Debug.WriteLine(Output);
+            log.Debug(connected ? $"Connected.\nResponse: {response}\nRet: {ret}" : response);
+            Output += $"Connection response to {IPAddress}:{Port}\n";
+            log.Debug(Output);
         }
 
         //private void Send(string command)
