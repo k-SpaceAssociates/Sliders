@@ -1,4 +1,11 @@
 ﻿<Project Sdk="WixToolset.Sdk/6.0.1">
+	<ItemGroup>
+		<Content Include="kSA.ico" />
+	</ItemGroup>
+	<ItemGroup>
+		<ProjectReference Include="..\SliderLauncher\SliderLauncher.csproj" />
+		<ProjectReference Include="..\Sliders\Sliders.csproj" />
+	</ItemGroup>
   <PropertyGroup>
     <OutputType>Package</OutputType>
     <TargetFramework>net472</TargetFramework>
@@ -6,9 +13,9 @@
     <DefineConstants>AppOutputPath=$(OutputDir)\</DefineConstants>
   </PropertyGroup>
   <ItemGroup>
-    <!-- Build your app project first -->
-    <ProjectReference Include="..\SliderLauncher\SliderLauncher.csproj" />
-    <ProjectReference Include="..\Sliders.csproj" />
+    <None Include="kSA.ico">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <!-- Include your manually created WiX fragment listing files -->

@@ -1,11 +1,12 @@
 <Wix xmlns="http://wixtoolset.org/schemas/v4/wxs">
-	
 	<Fragment>
-		<DirectoryRef Id="ProgramFiles64Folder" />
-		<ComponentGroup Id="AppFiles">
+		<ComponentGroup Id="AppFiles"  Directory="INSTALLFOLDER">
 			<Component Id="RemoveInstallFolderContents" Guid="{3D0E9EE5-1B87-4A76-92AC-2AA7858E8D0F}">
 				<!-- Remove all files in INSTALLFOLDER -->
 				<RemoveFile Id="RemoveAllFiles" Directory="INSTALLFOLDER" Name="*.*" On="install" />
+			</Component>
+			<Component Id="cmp_SliderLauncher" Guid="{112A3180-38E0-4FA9-A3F1-ACD8742ABD55}">
+				<File Id ="SliderLauncher" Source="SliderLauncher.exe" KeyPath="yes"/>
 			</Component>
 			<Component Id="SliderLauncher.dll" Guid="*">
 				<File Source="$(var.AppOutputPath)SliderLauncher.dll" />
@@ -40,9 +41,6 @@
 			<Component Id="SliderLauncher.dll.config" Guid="*">
 				<File Source="$(var.AppOutputPath)SliderLauncher.dll.config" />
 			</Component>
-			<Component Id="SliderLauncher.exe" Guid="*">
-				<File Source="$(var.AppOutputPath)SliderLauncher.exe" />
-			</Component>
 			<Component Id="SliderLauncher.pdb" Guid="*">
 				<File Source="$(var.AppOutputPath)SliderLauncher.pdb" />
 			</Component>
@@ -60,5 +58,39 @@
 			</Component>
 			<!-- More components here -->
 		</ComponentGroup>
+		
+		<ComponentGroup Id="AppShortcuts" >
+
+			<Component Id="DesktopShortcutComponent" Guid="{6071A018-7C83-476B-A93B-016C63E36DC4}">
+				<Shortcut
+					Id="SliderLauncherDesktopShortcut"
+					Directory="DesktopFolder"
+					Name="SliderLauncher"
+					Target="[INSTALLFOLDER]SliderLauncher.exe"
+					Description="Sliders Application"
+					WorkingDirectory="INSTALLFOLDER"
+					Icon="kSA.ico"
+          >
+				</Shortcut>
+				<RegistryValue Root="HKCU" Key="Software\SliderLauncher" Name="installed" Type="integer" Value="1" KeyPath="yes" />
+			</Component>
+
+			<Component Id="StartMenuShortcutComponent" Guid="{BCEDD73C-57DF-44F7-AB64-42CEF1677500}">
+				<Shortcut
+					Id="SlidersShortcut"
+					Directory="SliderProgramMenuDir"
+					Name="SliderLauncher"
+					Target="[INSTALLFOLDER]SliderLauncher.exe"
+					Description="Sliders Application"
+					WorkingDirectory="INSTALLFOLDER"
+            >
+				</Shortcut>
+				<RemoveFolder Id="RemoveMyAppMenuFolder" On="uninstall" Directory="SliderProgramMenuDir" />
+				<RegistryValue Root="HKCU" Key="Software\SliderLauncher" Name="installed" Type="integer" Value="1" KeyPath="yes" />
+			</Component>
+		</ComponentGroup>
+	</Fragment>
+	<Fragment>
+		<Icon Id="kSA.ico" SourceFile="kSA.ico" />
 	</Fragment>
 </Wix>

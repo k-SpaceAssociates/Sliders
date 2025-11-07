@@ -23,12 +23,16 @@
 	<ItemGroup>
 	  <Compile Remove="ClientTestApp\**" />
 	  <Compile Remove="SliderLauncher\**" />
+	  <Compile Remove="Slider_Install\**" />
 	  <EmbeddedResource Remove="ClientTestApp\**" />
 	  <EmbeddedResource Remove="SliderLauncher\**" />
+	  <EmbeddedResource Remove="Slider_Install\**" />
 	  <None Remove="ClientTestApp\**" />
 	  <None Remove="SliderLauncher\**" />
+	  <None Remove="Slider_Install\**" />
 	  <Page Remove="ClientTestApp\**" />
 	  <Page Remove="SliderLauncher\**" />
+	  <Page Remove="Slider_Install\**" />
 	</ItemGroup>
 
 	<ItemGroup>

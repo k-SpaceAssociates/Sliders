@@ -7,13 +7,15 @@
 		<UseWPF>true</UseWPF>
 		<Nullable>enable</Nullable>
 		<ImplicitUsings>enable</ImplicitUsings>
+		<ApplicationIcon>kSA.ico</ApplicationIcon>
+	</PropertyGroup>
+	
+	<PropertyGroup>
+		<Version>1.0.2.0</Version>
+		<AssemblyVersion>1.0.2.0</AssemblyVersion>
+		<FileVersion>1.0.2.0</FileVersion>
 	</PropertyGroup>
 
-	<ItemGroup>
-	  <None Remove="MainWindow.xaml.bak" />
-	  <None Remove="MainWindow.xaml.cs.bak" />
-	  <None Remove="TcpClientViewModel.cs.bak" />
-	</ItemGroup>
 
 	<ItemGroup>
 	  <PackageReference Include="kSATxtCmdNETSDK" Version="1.0.7" />
@@ -33,6 +35,9 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <None Update="kSA.ico">
+	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	  </None>
 	  <None Update="log4net.config">
 	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
 	  </None>

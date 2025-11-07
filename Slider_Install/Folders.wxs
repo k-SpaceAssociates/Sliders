@@ -1,8 +1,29 @@
-<?xml version="1.0" encoding="UTF-8"?>
 <Wix xmlns="http://wixtoolset.org/schemas/v4/wxs">
 	<Fragment>
-		<DirectoryRef Id="ProgramFiles64Folder">
-			<Directory Id="INSTALLFOLDER" Name="SliderLauncher" />
-		</DirectoryRef>
+		<StandardDirectory Id="DesktopFolder" />
+
+		<StandardDirectory Id="ProgramMenuFolder">
+			<!-- Add our application sub folder -->
+			<Directory
+			  Id="SliderProgramMenuDir"
+			  Name="SliderLauncher" >
+			</Directory>
+		</StandardDirectory>
+
+		<StandardDirectory Id="ProgramFiles6432Folder">
+			<!-- Add our company sub folder -->
+			<Directory
+			  Id="SliderLauncherFolder"
+			  Name="!(bind.Property.Manufacturer)"
+        >
+				<!-- Add our application sub folder -->
+				<Directory
+				  Id="INSTALLFOLDER"
+				  Name="SliderLauncher"
+        >
+				</Directory>
+			</Directory>
+		</StandardDirectory>
+
 	</Fragment>
 </Wix>

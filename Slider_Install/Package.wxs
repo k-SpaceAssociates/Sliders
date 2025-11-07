@@ -1,15 +1,28 @@
-﻿<?xml version="1.0" encoding="UTF-8"?>
-<Wix xmlns="http://wixtoolset.org/schemas/v4/wxs">
-	<Package Id="KSA.Slider_Install"
-			 Name="Slider_Install"
-			 Manufacturer="k-Space Associates"
-			 Version="1.0.0.0">
+﻿<Wix xmlns="http://wixtoolset.org/schemas/v4/wxs">
+	<!-- increment Version for new builds -->
+	<Package
+		Id="Manufacturer.SliderLauncherINSTALLER"
+		Name="SlidLauncherInstaller"
+		Manufacturer="k-Space Associates, Inc."
+		Version="1.0.2.0"
+		UpgradeCode="AD528B81-C979-4151-BAAE-E2E1853E4524">
 
-		<MajorUpgrade DowngradeErrorMessage="!(loc.DowngradeError)" />
+		<!-- hint - reference the "Id" field of the desired "File" "Component -->
+		<SummaryInformation Description="Version: !(bind.fileVersion.SliderLauncher)"/>
+		<MajorUpgrade
+		AllowDowngrades="no"
+		AllowSameVersionUpgrades="yes"
+		DowngradeErrorMessage="!(loc.DowngradeError)"
+		Schedule="afterInstallInitialize" />
+		<MediaTemplate EmbedCab="yes" />
 
-		<Feature Id="Main" Title="SliderLauncher" Level="1">
+		<!-- the icon that will show up in Add/Remove Programs -->
+		<!-- expected to be found in the root of the installer project folder-->
+		<Icon Id="icon.ico" SourceFile="kSA.ico" />
+		<Property Id="ARPPRODUCTICON" Value="icon.ico" />
+		<Feature Id="Main">
 			<ComponentGroupRef Id="AppFiles" />
+			<ComponentGroupRef Id="AppShortcuts" />
 		</Feature>
-
 	</Package>
 </Wix>
