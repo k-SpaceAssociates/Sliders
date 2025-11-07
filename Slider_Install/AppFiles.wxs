@@ -47,9 +47,6 @@
 			<Component Id="SliderLauncher.runtimeconfig.json" Guid="*">
 				<File Source="$(var.AppOutputPath)SliderLauncher.runtimeconfig.json" />
 			</Component>
-			<Component Id="Sliders.config" Guid="*">
-				<File Source="$(var.AppOutputPath)Sliders.config" />
-			</Component>
 			<Component Id="Sliders.dll" Guid="*">
 				<File Source="$(var.AppOutputPath)Sliders.dll" />
 			</Component>
