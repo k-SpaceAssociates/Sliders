@@ -222,7 +222,7 @@ namespace ClientTestApp
             }
             catch (Exception ex)
             {
-                Debug.WriteLine($"Error while disconnecting client: {ex.Message}");
+                log.Debug("Error while disconnecting client: {ex.Message}");
             }
 
 
@@ -239,7 +239,7 @@ namespace ClientTestApp
             }
             catch (Exception ex)
             {
-                Debug.WriteLine($"Error during TCP shutdown: {ex.Message}");
+                log.Debug($"Error during TCP shutdown: {ex.Message}");
             }
             return true; // allow close
 

@@ -14,13 +14,14 @@ using System.Threading.Tasks;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Threading;
-
+using log4net.Config;
+using System.IO;
 
 namespace SliderLauncher
 {
     public partial class TcpClientViewModel : ObservableObject
     {
-        private static readonly ILog log = LogManager.GetLogger(typeof(MainWindow));
+        private static readonly ILog log = LogManager.GetLogger(typeof(TcpClientViewModel));
         private readonly DispatcherTimer _timer = new();
         private readonly kSATxtCmdClient cmdClient = new();
         private readonly CommandClientHandler client = new();

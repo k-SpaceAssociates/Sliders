@@ -1,10 +1,12 @@
-﻿using System.Diagnostics;
+﻿using log4net;
+using System.Diagnostics;
 using System.Windows.Controls;
 
 namespace Sliders
 {
     public partial class SliderControl : UserControl
     {
+        private static readonly ILog log = LogManager.GetLogger(typeof(SliderControl));
         public SliderControl()
         {
             InitializeComponent();
@@ -19,16 +21,16 @@ namespace Sliders
             {
                 if (this.DataContext != null)
                 {
-                    Debug.WriteLine($"[SliderControl] DataContext set to {this.DataContext.GetType().Name}");
+                    log.Debug($"[SliderControl] DataContext set to {this.DataContext.GetType().Name}");
 
                     if (this.DataContext is SliderControlViewModel vm)
                     {
-                        Debug.WriteLine($"[SliderControl] SliderValue = {vm.SliderValue}");
+                        log.Debug($"[SliderControl] SliderValue = {vm.SliderValue}");
                     }
                 }
                 else
                 {
-                    Debug.WriteLine("[SliderControl] DataContext is NULL");
+                    log.Debug("[SliderControl] DataContext is NULL");
                 }
             };
         }

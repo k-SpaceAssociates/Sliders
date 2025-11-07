@@ -3,18 +3,20 @@ using Sliders;
 using System;
 using System.ComponentModel;
 using System.Windows;
+using log4net;
 
 namespace SliderLauncher
 {
     public partial class MainWindow : Window
     {
+        private static readonly log4net.ILog log = log4net.LogManager.GetLogger(typeof(MainWindow));
         private readonly SliderControlViewModel sliderVM;
         private readonly TcpClientViewModel? tcpVM;
 
         public MainWindow()
         {
             InitializeComponent();
-
+            log.Debug("MainWindow initialized.");
             // Always create the UI-facing ViewModel
             sliderVM = new SliderControlViewModel();
 
@@ -41,11 +43,13 @@ namespace SliderLauncher
             if (tcpVM != null && tcpVM.AutoLaunch == true)
             {
                 _ = tcpVM.ConnectAsync(); // fire-and-forget
+                log.Debug("tcpVM.ConnectAsync(); completed.");
             }
         }
 
         private void MainWindow_Closing(object? sender, CancelEventArgs e)
         {
+            log.Debug("Starting MainWindow_Closing.");
             bool? status = sliderVM?.OnClosing();
             if (status != null && status == false)
             {
@@ -62,6 +66,7 @@ namespace SliderLauncher
                     return;
                 }
                 tcpVM.SaveAllSettings();
+                log.Debug("tcpVM.SaveAllSettings completed.");
             }
         }
     }
