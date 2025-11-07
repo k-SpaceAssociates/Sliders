@@ -22,6 +22,9 @@
 			<Component Id="kSATxtCmdNETSDK.dll" Guid="*">
 				<File Source="$(var.AppOutputPath)kSATxtCmdNETSDK.dll" />
 			</Component>
+			<Component Id="log4net.config" Guid="*">
+				<File Source="$(var.AppOutputPath)log4net.config" />
+			</Component>
 			<Component Id="log4net.dll" Guid="*">
 				<File Source="$(var.AppOutputPath)log4net.dll" />
 			</Component>
