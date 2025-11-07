@@ -1,9 +1,10 @@
-﻿using SliderLauncher;
+﻿using log4net;
+using SliderLauncher;
 using Sliders;
 using System;
 using System.ComponentModel;
+using System.Reflection;
 using System.Windows;
-using log4net;
 
 namespace SliderLauncher
 {
@@ -16,6 +17,8 @@ namespace SliderLauncher
         public MainWindow()
         {
             InitializeComponent();
+            var version = Assembly.GetExecutingAssembly().GetName().Version;
+            this.Title = $"Sliders v{version}";
             log.Debug("MainWindow initialized.");
             // Always create the UI-facing ViewModel
             sliderVM = new SliderControlViewModel();
