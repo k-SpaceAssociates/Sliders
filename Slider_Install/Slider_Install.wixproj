@@ -1,20 +1,17 @@
 ﻿<Project Sdk="WixToolset.Sdk/6.0.1">
-	<PropertyGroup>
-		<OutputType>Package</OutputType>
-		<TargetFramework>net472</TargetFramework>
-		<OutputDir>$(MSBuildProjectDirectory)\..\SliderLauncher\bin\$(Configuration)\net9.0-windows7.0</OutputDir>
-		<DefineConstants>AppOutputPath=$(OutputDir)\</DefineConstants>
-	</PropertyGroup>
-
-	<ItemGroup>
-		<!-- Build your app project first -->
-		<ProjectReference Include="..\SliderLauncher\SliderLauncher.csproj" />
-	</ItemGroup>
-
-
-
-	<ItemGroup>
-		<!-- Include your manually created WiX fragment listing files -->
-		<Wix Include="AppFiles.wxs" />
-	</ItemGroup>
+  <PropertyGroup>
+    <OutputType>Package</OutputType>
+    <TargetFramework>net472</TargetFramework>
+    <OutputDir>$(MSBuildProjectDirectory)\..\SliderLauncher\bin\$(Configuration)\net9.0-windows7.0</OutputDir>
+    <DefineConstants>AppOutputPath=$(OutputDir)\</DefineConstants>
+  </PropertyGroup>
+  <ItemGroup>
+    <!-- Build your app project first -->
+    <ProjectReference Include="..\SliderLauncher\SliderLauncher.csproj" />
+    <ProjectReference Include="..\Sliders.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <!-- Include your manually created WiX fragment listing files -->
+    <Wix Include="AppFiles.wxs" />
+  </ItemGroup>
 </Project>
