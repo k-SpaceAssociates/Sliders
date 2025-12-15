@@ -23,15 +23,23 @@
 	<ItemGroup>
 	  <Compile Remove="ClientTestApp\**" />
 	  <Compile Remove="SliderLauncher\**" />
+	  <Compile Remove="Sliders\**" />
+	  <Compile Remove="Sliders_W_RT\**" />
 	  <Compile Remove="Slider_Install\**" />
 	  <EmbeddedResource Remove="ClientTestApp\**" />
 	  <EmbeddedResource Remove="SliderLauncher\**" />
+	  <EmbeddedResource Remove="Sliders\**" />
+	  <EmbeddedResource Remove="Sliders_W_RT\**" />
 	  <EmbeddedResource Remove="Slider_Install\**" />
 	  <None Remove="ClientTestApp\**" />
 	  <None Remove="SliderLauncher\**" />
+	  <None Remove="Sliders\**" />
+	  <None Remove="Sliders_W_RT\**" />
 	  <None Remove="Slider_Install\**" />
 	  <Page Remove="ClientTestApp\**" />
 	  <Page Remove="SliderLauncher\**" />
+	  <Page Remove="Sliders\**" />
+	  <Page Remove="Sliders_W_RT\**" />
 	  <Page Remove="Slider_Install\**" />
 	</ItemGroup>
 
@@ -72,10 +80,6 @@
 	  <Resource Include="Images\Nidec.png">
 	    <CopyToOutputDirectory>Never</CopyToOutputDirectory>
 	  </Resource>
-	</ItemGroup>
-
-	<ItemGroup>
-	  <Folder Include="Sliders\" />
 	</ItemGroup>
 
 </Project>

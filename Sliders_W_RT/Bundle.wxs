@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi"
+     xmlns:util="http://schemas.microsoft.com/wix/UtilExtension">
+  <Bundle Name="Sliders_W_RT"
+          Version="1.0.2.0" 
+          Manufacturer="k-Space Associates" 
+          UpgradeCode="EC1EAD0B-6433-45AB-A726-1FA1EF4508D1" 
+          IconSourceFile="kSA.ico"
+  >
+
+    <WixVariable Id="WixStdbaLicenseUrl" Value="" />
+
+    <BootstrapperApplicationRef Id="WixStandardBootstrapperApplication.HyperlinkLicense">
+    </BootstrapperApplicationRef>
+
+    <util:RegistrySearch
+      Id="Net9DesktopInstalled"
+      Root="HKLM"
+      Key="SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\Microsoft.WindowsDesktop.AppRuntime.9.0"
+      Variable="Net9DesktopInstalled"/>
+
+    <Chain>
+      <!-- Include .NET 9 Desktop Runtime EXE first -->
+      <ExePackage
+          Id="DotNetRuntime"
+          SourceFile="windowsdesktop-runtime-9.0.11-win-x64.exe"
+          InstallCommand="/quiet /norestart"
+          PerMachine="yes"
+          Vital="yes"
+          InstallCondition="NOT Net9DesktopInstalled"/>
+
+      <!-- Include your application MSI -->
+      <MsiPackage
+          Id="Sliders"
+          SourceFile="..\Slider_Install\bin\x64\Release\en-US\Slider_Install.msi"
+          DisplayInternalUI="yes"
+          Visible="yes"
+          Vital="yes" />
+
+      <RollbackBoundary />
+      <MsiPackage SourceFile="..\Slider_Install\bin\x64\Release\en-US\Slider_Install.msi" />
+    </Chain>
+  </Bundle>
+</Wix>
